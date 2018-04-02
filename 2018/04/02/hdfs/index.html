@@ -15,17 +15,18 @@
 
 
 
-<meta name="description" content="Hadoop�ֲ�ʽ�ļ�ϵͳ##һ���ļ����ֲ��ڶ�������ϴ洢 ##���ݴ��Ե�ϵͳ ##�������������ݷ��� ##�ʺϴ��ģ���ݼ���ʹ�� ##HBase����HDFS  ÿһ�����̶���Ĭ�ϵ����ݿ��С�Ǵ��̽��ж�ȡ����С��λһ��Ϊ512�ֽڡ�Block�����ļ��ᱻ�ָ�Ϊ���Block���д洢��BlockĬ�">
+<meta name="description" content="Hadoop分布式文件系统##一个文件被分布在多个机器上存储 ##高容错性的系统 ##高吞吐量的数据访问 ##适合大规模数据集的使用 ##HBase基于HDFS  每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位一般为512字节。Block：大文件会被分割为多个Block进行存储，Block默认大小为128M每一个Block 会在DataNode上存储多个副本，默认值为3。HDFS的块比磁盘">
+<meta name="keywords" content="hadoop,hdfs">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Myblogs">
+<meta property="og:title" content="hdfs">
 <meta property="og:url" content="http://yoursite.com/2018/04/02/hdfs/index.html">
 <meta property="og:site_name" content="Myblogs">
-<meta property="og:description" content="Hadoop�ֲ�ʽ�ļ�ϵͳ##һ���ļ����ֲ��ڶ�������ϴ洢 ##���ݴ��Ե�ϵͳ ##�������������ݷ��� ##�ʺϴ��ģ���ݼ���ʹ�� ##HBase����HDFS  ÿһ�����̶���Ĭ�ϵ����ݿ��С�Ǵ��̽��ж�ȡ����С��λһ��Ϊ512�ֽڡ�Block�����ļ��ᱻ�ָ�Ϊ���Block���д洢��BlockĬ�">
+<meta property="og:description" content="Hadoop分布式文件系统##一个文件被分布在多个机器上存储 ##高容错性的系统 ##高吞吐量的数据访问 ##适合大规模数据集的使用 ##HBase基于HDFS  每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位一般为512字节。Block：大文件会被分割为多个Block进行存储，Block默认大小为128M每一个Block 会在DataNode上存储多个副本，默认值为3。HDFS的块比磁盘">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-02T03:03:38.680Z">
+<meta property="og:updated_time" content="2018-04-02T03:09:46.834Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Myblogs">
-<meta name="twitter:description" content="Hadoop�ֲ�ʽ�ļ�ϵͳ##һ���ļ����ֲ��ڶ�������ϴ洢 ##���ݴ��Ե�ϵͳ ##�������������ݷ��� ##�ʺϴ��ģ���ݼ���ʹ�� ##HBase����HDFS  ÿһ�����̶���Ĭ�ϵ����ݿ��С�Ǵ��̽��ж�ȡ����С��λһ��Ϊ512�ֽڡ�Block�����ļ��ᱻ�ָ�Ϊ���Block���д洢��BlockĬ�">
+<meta name="twitter:title" content="hdfs">
+<meta name="twitter:description" content="Hadoop分布式文件系统##一个文件被分布在多个机器上存储 ##高容错性的系统 ##高吞吐量的数据访问 ##适合大规模数据集的使用 ##HBase基于HDFS  每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位一般为512字节。Block：大文件会被分割为多个Block进行存储，Block默认大小为128M每一个Block 会在DataNode上存储多个副本，默认值为3。HDFS的块比磁盘">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -57,7 +58,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Myblogs</title>
+<title>hdfs | Myblogs</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -182,7 +183,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yelee/">yelee</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop-hdfs/">hadoop,hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yelee/">yelee</a></li></ul>
                     </div>
                 </section>
                 
@@ -259,7 +260,7 @@
   
     <div class="article-meta">
       <a href="/2018/04/02/hdfs/" class="article-date">
-      <time datetime="2018-04-02T03:03:13.907Z" itemprop="datePublished">2018-04-02</time>
+      <time datetime="2018-04-02T03:08:58.000Z" itemprop="datePublished">2018-04-02</time>
 </a>
 
 
@@ -270,32 +271,54 @@
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      hdfs
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop-hdfs/">hadoop,hdfs</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="Hadoop�ֲ�ʽ�l�ϵͳ"><a href="#Hadoop�ֲ�ʽ�l�ϵͳ" class="headerlink" title="Hadoop�ֲ�ʽ�ļ�ϵͳ"></a>Hadoop�ֲ�ʽ�ļ�ϵͳ</h1><p>##һ���ļ����ֲ��ڶ�������ϴ洢</p>
-<p>##���ݴ��Ե�ϵͳ</p>
-<p>##�������������ݷ���</p>
-<p>##�ʺϴ��ģ���ݼ���ʹ��</p>
-<p>##HBase����HDFS</p>
+        <h1 id="Hadoop分布式文件系统"><a href="#Hadoop分布式文件系统" class="headerlink" title="Hadoop分布式文件系统"></a>Hadoop分布式文件系统</h1><p>##一个文件被分布在多个机器上存储</p>
+<p>##高容错性的系统</p>
+<p>##高吞吐量的数据访问</p>
+<p>##适合大规模数据集的使用</p>
+<p>##HBase基于HDFS</p>
 <blockquote>
-<p>ÿһ�����̶���Ĭ�ϵ����ݿ��С�Ǵ��̽��ж�ȡ����С��λ<br>һ��Ϊ512�ֽڡ�<br>Block�����ļ��ᱻ�ָ�Ϊ���Block���д洢��BlockĬ�ϴ�СΪ128M<br>ÿһ��Block ����DataNode�ϴ洢���������Ĭ��ֵΪ3��<br>HDFS�Ŀ�ȴ��̵Ŀ��ܶ࣬��Ŀ����Ϊ����С��Ѱַ������<br>128M-��512�ֽ�һ��block </p>
+<p>每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位<br>一般为512字节。<br>Block：大文件会被分割为多个Block进行存储，Block默认大小为128M<br>每一个Block 会在DataNode上存储多个副本，默认值为3。<br>HDFS的块比磁盘的块大很多，其目的是为了最小化寻址开销。<br>128M-》512字节一个block </p>
 </blockquote>
-<p>###�Էֲ�ʽ�ļ�ϵͳ�еĿ���г���<br>    ����Ӧ�Դ��ļ��Ĵ洢<br>    ���˴洢ϵͳ�����<br>    ���������ݱ���</p>
-<p>###���ڵ��ϵ�NameNode������HDFS�ļ�ϵͳ���ػ����̡��ý��̸���<br>    ��¼�ļ�����ηָ�����ݿ飬�Լ��洢���ݿ�����ݽڵ����Ϣ<br>    ���ڴ��I/O���м��й���<br>    �����ļ���block�Ķ�Ӧ��ϵ/block��ڵ�Ķ�Ӧ��ϵ</p>
+<p>###对分布式文件系统中的块进行抽象：<br>    更好应对大文件的存储<br>    简化了存储系统的设计<br>    适用于数据备份</p>
+<p>###主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责：<br>    记录文件是如何分割成数据块，以及存储数据块的数据节点的信息<br>    对内存和I/O进行集中管理<br>    保存文件与block的对应关系/block与节点的对应关系</p>
 <blockquote>
-<p>ÿ����Ⱥ����һ��SecondaryNameNode���̣�������HDFS״̬�ĸ�����̨����<br>�����ܻ��¼�κ�ʵʱ�����ݱ仯<br>SecondaryNameNode���̻ᶨ����NameNodeͨ��ÿ�����뷢����������ÿ��һ<br>��Сʱ���Ϳ챨�棨��ǰ�ӽڵ����ݿ��ʵ����Ϣ���������ڱ���HDFSԪ���ݵĿ���<br>Ҳ�����������õ�NameNode��</p>
+<p>每个集群都有一个SecondaryNameNode进程，负责监控HDFS状态的辅助后台进程<br>不接受或记录任何实时的数据变化<br>SecondaryNameNode进程会定期与NameNode通信每隔三秒发送心跳包，每隔一<br>个小时发送快报告（当前从节点数据块的实际信息），并定期保存HDFS元数据的快照<br>也可以用作备用的NameNode。</p>
 </blockquote>
-<p>##NameNode�������������ڵ��ϣ���������ļ����ļ�Ŀ¼��Block�Ķ�Ӧ��ϵ���Լ�Block��DataNode��ӳ���ϵ</p>
-<p>###��Ҫʹ�������ļ�<br>   <strong> Fsimage :�����ļ�ϵͳ��ӳ����Ϣ</strong></p>
-<p>   <strong> Edits��������ʱ�Լ�¼���ݸı��������ļ����ϸ�������û�����Ԫ���ݵ��޸Ĳ�����</strong></p>
-<p>##checkpoint���ƣ�secondaryNameNode���� �������ʺϵ�ʱ����edits�ļ����ݺϲ���fsimage����ʱ������Ϊ����<br><strong>    CheckPoint��ʱ��NameNode����һ�����ļ�������</strong></p>
-<p><strong>    ��־�ļ�ϵͳ�ı仯�����ļ���Ϊedits.new</strong></p>
-<p><strong>    �ļ�edits���ٽ��ܱ仯�µı仯ʱ����fsimageһ�𿽱���CheckPointNode�����ļ�ϵͳ��</strong></p>
-<p><strong> CheckPointNode�������ļ��ϲ��ɲ���fsimage.ckpt�ļ�</strong></p>
-<p><strong> CheckPointNode��fsimage.ckpt������NameNode��</strong></p>
-<p><strong> NameNodeʹ���µ�fsimage.ckt���ԭfsimage�ļ�</strong> </p>
-<p><strong> NameNode��edits.new���edits</strong></p>
+<p>##NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系</p>
+<p>###主要使用以下文件<br>   <strong> Fsimage :保存文件系统的映射信息</strong></p>
+<p>   <strong> Edits：用来临时性记录数据改变的情况的文件（上个检查点后用户对于元数据的修改操作）</strong></p>
+<p>##checkpoint机制（secondaryNameNode负责） 用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点<br><strong>    CheckPoint启动时，NameNode创建一个新文件来接受</strong></p>
+<p><strong>    日志文件系统的变化，该文件名为edits.new</strong></p>
+<p><strong>    文件edits不再接受变化新的变化时，和fsimage一起拷贝到CheckPointNode所在文件系统中</strong></p>
+<p><strong> CheckPointNode将两个文件合并成产生fsimage.ckpt文件</strong></p>
+<p><strong> CheckPointNode将fsimage.ckpt拷贝到NameNode上</strong></p>
+<p><strong> NameNode使用新的fsimage.ckt替代原fsimage文件</strong> </p>
+<p><strong> NameNode用edits.new替代edits</strong></p>
 
       
     </div>
@@ -304,12 +327,12 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2018/04/02/hdfs/"></a></p>
+        <p><span>本文标题:</span><a href="/2018/04/02/hdfs/">hdfs</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">张睿</a></p>
-        <p><span>发布时间:</span>2018-04-02, 11:03:13</p>
-        <p><span>最后更新:</span>2018-04-02, 11:03:38</p>
+        <p><span>发布时间:</span>2018-04-02, 11:08:58</p>
+        <p><span>最后更新:</span>2018-04-02, 11:09:46</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2018/04/02/hdfs/" title="">http://yoursite.com/2018/04/02/hdfs/</a>
+            <span>原始链接:</span><a class="post-url" href="/2018/04/02/hdfs/" title="hdfs">http://yoursite.com/2018/04/02/hdfs/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/04/02/hdfs/　　作者: 张睿" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -324,8 +347,8 @@
         
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2018/04/02/hdfs_files/proxy/">
-                    
+                <a href="/2018/03/31/hello-world/">
+                    Hello World
                 </a>
             </div>
         
@@ -337,7 +360,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hadoop�ֲ�ʽ�l�ϵͳ"><span class="toc-number">1.</span> <span class="toc-text">Hadoop�ֲ�ʽ�ļ�ϵͳ</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hadoop分布式文件系统"><span class="toc-number">1.</span> <span class="toc-text">Hadoop分布式文件系统</span></a></li></ol>
         
     </div>
     <style>
@@ -373,7 +396,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"hdfs　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -389,7 +412,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2018/04/02/hdfs/" data-title="" data-url="http://yoursite.com/2018/04/02/hdfs/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/04/02/hdfs/" data-title="hdfs" data-url="http://yoursite.com/2018/04/02/hdfs/"></div>
     <script>
         var duoshuoQuery = {short_name:"spicy"};
         var loadComment = function(){
@@ -418,13 +441,13 @@
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2018/04/02/hdfs_files/proxy/" title="下一篇: ">
+            <a href="/2018/03/31/hello-world/" title="下一篇: Hello World">
                 <i class="fa fa-angle-right"></i>
             </a>
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs/">hdfs</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs_files/proxy/">hdfs_files/proxy</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs_files/mahua/">hdfs_files/mahua</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/31/hello-world/">Hello World</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs/">hdfs</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/31/hello-world/">Hello World</a></li></ul>
 
 
 

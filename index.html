@@ -183,7 +183,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yelee/">yelee</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop-hdfs/">hadoop,hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yelee/">yelee</a></li></ul>
                     </div>
                 </section>
                 
@@ -262,7 +262,7 @@
   
     <div class="article-meta">
       <a href="/2018/04/02/hdfs/" class="article-date">
-      <time datetime="2018-04-02T03:03:13.907Z" itemprop="datePublished">2018-04-02</time>
+      <time datetime="2018-04-02T03:08:58.000Z" itemprop="datePublished">2018-04-02</time>
 </a>
 
 
@@ -273,32 +273,43 @@
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/02/hdfs/">hdfs</a>
+    </h1>
+  
+
+      </header>
+      
+    
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="Hadoop�ֲ�ʽ�l�ϵͳ"><a href="#Hadoop�ֲ�ʽ�l�ϵͳ" class="headerlink" title="Hadoop�ֲ�ʽ�ļ�ϵͳ"></a>Hadoop�ֲ�ʽ�ļ�ϵͳ</h1><p>##һ���ļ����ֲ��ڶ�������ϴ洢</p>
-<p>##���ݴ��Ե�ϵͳ</p>
-<p>##�������������ݷ���</p>
-<p>##�ʺϴ��ģ���ݼ���ʹ��</p>
-<p>##HBase����HDFS</p>
+        <h1 id="Hadoop分布式文件系统"><a href="#Hadoop分布式文件系统" class="headerlink" title="Hadoop分布式文件系统"></a>Hadoop分布式文件系统</h1><p>##一个文件被分布在多个机器上存储</p>
+<p>##高容错性的系统</p>
+<p>##高吞吐量的数据访问</p>
+<p>##适合大规模数据集的使用</p>
+<p>##HBase基于HDFS</p>
 <blockquote>
-<p>ÿһ�����̶���Ĭ�ϵ����ݿ��С�Ǵ��̽��ж�ȡ����С��λ<br>һ��Ϊ512�ֽڡ�<br>Block�����ļ��ᱻ�ָ�Ϊ���Block���д洢��BlockĬ�ϴ�СΪ128M<br>ÿһ��Block ����DataNode�ϴ洢���������Ĭ��ֵΪ3��<br>HDFS�Ŀ�ȴ��̵Ŀ��ܶ࣬��Ŀ����Ϊ����С��Ѱַ������<br>128M-��512�ֽ�һ��block </p>
+<p>每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位<br>一般为512字节。<br>Block：大文件会被分割为多个Block进行存储，Block默认大小为128M<br>每一个Block 会在DataNode上存储多个副本，默认值为3。<br>HDFS的块比磁盘的块大很多，其目的是为了最小化寻址开销。<br>128M-》512字节一个block </p>
 </blockquote>
-<p>###�Էֲ�ʽ�ļ�ϵͳ�еĿ���г���<br>    ����Ӧ�Դ��ļ��Ĵ洢<br>    ���˴洢ϵͳ�����<br>    ���������ݱ���</p>
-<p>###���ڵ��ϵ�NameNode������HDFS�ļ�ϵͳ���ػ����̡��ý��̸���<br>    ��¼�ļ�����ηָ�����ݿ飬�Լ��洢���ݿ�����ݽڵ����Ϣ<br>    ���ڴ��I/O���м��й���<br>    �����ļ���block�Ķ�Ӧ��ϵ/block��ڵ�Ķ�Ӧ��ϵ</p>
+<p>###对分布式文件系统中的块进行抽象：<br>    更好应对大文件的存储<br>    简化了存储系统的设计<br>    适用于数据备份</p>
+<p>###主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责：<br>    记录文件是如何分割成数据块，以及存储数据块的数据节点的信息<br>    对内存和I/O进行集中管理<br>    保存文件与block的对应关系/block与节点的对应关系</p>
 <blockquote>
-<p>ÿ����Ⱥ����һ��SecondaryNameNode���̣�������HDFS״̬�ĸ�����̨����<br>�����ܻ��¼�κ�ʵʱ�����ݱ仯<br>SecondaryNameNode���̻ᶨ����NameNodeͨ��ÿ�����뷢����������ÿ��һ<br>��Сʱ���Ϳ챨�棨��ǰ�ӽڵ����ݿ��ʵ����Ϣ���������ڱ���HDFSԪ���ݵĿ���<br>Ҳ�����������õ�NameNode��</p>
+<p>每个集群都有一个SecondaryNameNode进程，负责监控HDFS状态的辅助后台进程<br>不接受或记录任何实时的数据变化<br>SecondaryNameNode进程会定期与NameNode通信每隔三秒发送心跳包，每隔一<br>个小时发送快报告（当前从节点数据块的实际信息），并定期保存HDFS元数据的快照<br>也可以用作备用的NameNode。</p>
 </blockquote>
-<p>##NameNode�������������ڵ��ϣ���������ļ����ļ�Ŀ¼��Block�Ķ�Ӧ��ϵ���Լ�Block��DataNode��ӳ���ϵ</p>
-<p>###��Ҫʹ�������ļ�<br>   <strong> Fsimage :�����ļ�ϵͳ��ӳ����Ϣ</strong></p>
-<p>   <strong> Edits��������ʱ�Լ�¼���ݸı��������ļ����ϸ�������û�����Ԫ���ݵ��޸Ĳ�����</strong></p>
-<p>##checkpoint���ƣ�secondaryNameNode���� �������ʺϵ�ʱ����edits�ļ����ݺϲ���fsimage����ʱ������Ϊ����<br><strong>    CheckPoint��ʱ��NameNode����һ�����ļ�������</strong></p>
-<p><strong>    ��־�ļ�ϵͳ�ı仯�����ļ���Ϊedits.new</strong></p>
-<p><strong>    �ļ�edits���ٽ��ܱ仯�µı仯ʱ����fsimageһ�𿽱���CheckPointNode�����ļ�ϵͳ��</strong></p>
-<p><strong> CheckPointNode�������ļ��ϲ��ɲ���fsimage.ckpt�ļ�</strong></p>
-<p><strong> CheckPointNode��fsimage.ckpt������NameNode��</strong></p>
-<p><strong> NameNodeʹ���µ�fsimage.ckt���ԭfsimage�ļ�</strong> </p>
-<p><strong> NameNode��edits.new���edits</strong></p>
+<p>##NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系</p>
+<p>###主要使用以下文件<br>   <strong> Fsimage :保存文件系统的映射信息</strong></p>
+<p>   <strong> Edits：用来临时性记录数据改变的情况的文件（上个检查点后用户对于元数据的修改操作）</strong></p>
+<p>##checkpoint机制（secondaryNameNode负责） 用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点<br><strong>    CheckPoint启动时，NameNode创建一个新文件来接受</strong></p>
+<p><strong>    日志文件系统的变化，该文件名为edits.new</strong></p>
+<p><strong>    文件edits不再接受变化新的变化时，和fsimage一起拷贝到CheckPointNode所在文件系统中</strong></p>
+<p><strong> CheckPointNode将两个文件合并成产生fsimage.ckpt文件</strong></p>
+<p><strong> CheckPointNode将fsimage.ckpt拷贝到NameNode上</strong></p>
+<p><strong> NameNode使用新的fsimage.ckt替代原fsimage文件</strong> </p>
+<p><strong> NameNode用edits.new替代edits</strong></p>
 
       
     </div>
@@ -308,267 +319,10 @@
       
 
       
-      
-      <div class="clearfix"></div>
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop-hdfs/">hadoop,hdfs</a></li></ul>
     </div>
-    
-  </div>
-  
-</article>
 
-
-
-
-
-
-
-
-
-  
-    <article id="post-hdfs_files/proxy" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2018/04/02/hdfs_files/proxy/" class="article-date">
-      <time datetime="2018-04-02T03:02:43.842Z" itemprop="datePublished">2018-04-02</time>
-</a>
-
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <!DOCTYPE html>
-<!-- saved from url=(0031)http://mahua.jser.me/proxy.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <title></title>
-<script type="text/javascript" src="./hibot.js.下载"></script><style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style><style id="hibot" type="text/css">.hibot  { padding:0 0 0 38px; margin:auto; font-size:14px;font-family: monospace; background:#111; color: #e6e1dc;  }.hibot li{ margin: 0; padding-left: 10px; border-left: 2px solid #ccc; background:#111; list-style-position: outside; list-style-type: decimal; text-indent: 0; word-wrap: break-word; word-break: break-all; }.hibot .num { color: #a5c261; }.hibot .attr { color : #4093CC} .hibot .comment { color: #bc9458; font-style: italic; }.hibot .special { color: #da4939; }.hibot .statement { color: #cc7833; }.hibot .preProc { color: #e6e1dc; }.hibot .include, .hibot .head { color: #cc7833; }.hibot .string { color: #a5c261; }.hibot .type, .hibot .keyword, .hibot .val { color: #da4939; }</style></head>
-<body marginheight="0"><h1>Hadoop分布式文件系统</h1>
-<h2>一个文件被分布在多个机器上存储</h2>
-<h2>高容错性的系统</h2>
-<h2>高吞吐量的数据访问</h2>
-<h2>适合大规模数据集的使用</h2>
-<h2>HBase基于HDFS</h2>
-<blockquote>
-<p>每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位
-一般为512字节。
-Block：大文件会被分割为多个Block进行存储，Block默认大小为128M
-每一个Block 会在DataNode上存储多个副本，默认值为3。
-HDFS的块比磁盘的块大很多，其目的是为了最小化寻址开销。
-128M-》512字节一个block 
-
-</p>
-</blockquote>
-<h3>对分布式文件系统中的块进行抽象：</h3>
-<pre><code>更好应对大文件的存储
-简化了存储系统的设计
-适用于数据备份</code></pre>
-<h3>主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责：</h3>
-<pre><code>记录文件是如何分割成数据块，以及存储数据块的数据节点的信息
-对内存和I/O进行集中管理
-保存文件与block的对应关系/block与节点的对应关系</code></pre>
-<blockquote>
-<p>每个集群都有一个SecondaryNameNode进程，负责监控HDFS状态的辅助后台进程
-不接受或记录任何实时的数据变化
-SecondaryNameNode进程会定期与NameNode通信每隔三秒发送心跳包，每隔一
-个小时发送快报告（当前从节点数据块的实际信息），并定期保存HDFS元数据的快照
-也可以用作备用的NameNode。
-
-</p>
-</blockquote>
-<h2>NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系</h2>
-<h3>主要使用以下文件</h3>
-<p>   <strong> Fsimage :保存文件系统的映射信息</strong>
-
-</p>
-<p>   <strong> Edits：用来临时性记录数据改变的情况的文件（上个检查点后用户对于元数据的修改操作）</strong>
-
-
-</p>
-<h2>checkpoint机制（secondaryNameNode负责） 用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点</h2>
-<p><strong>    CheckPoint启动时，NameNode创建一个新文件来接受</strong>
-
-</p>
-<p><strong>    日志文件系统的变化，该文件名为edits.new</strong>
-
-</p>
-<p><strong>    文件edits不再接受变化新的变化时，和fsimage一起拷贝到CheckPointNode所在文件系统中</strong>
-
-</p>
-<p><strong> CheckPointNode将两个文件合并成产生fsimage.ckpt文件</strong>
-
-</p>
-<p><strong> CheckPointNode将fsimage.ckpt拷贝到NameNode上</strong>
-
-</p>
-<p><strong> NameNode使用新的fsimage.ckt替代原fsimage文件</strong> 
-
-</p>
-<p><strong> NameNode用edits.new替代edits</strong>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</p>
-</body></html>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-hdfs_files/mahua" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2018/04/02/hdfs_files/mahua/" class="article-date">
-      <time datetime="2018-04-02T03:02:43.648Z" itemprop="datePublished">2018-04-02</time>
-</a>
-
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        body{
-  padding:0;
-  margin:0;
-}
-.mahua-left, .mahua-right{
-    width:50%;
-    height:100%;
-} 
-.mahua-right{
-    width:50%;
-    margin-left:50%;
-}
-.mahua-preview{
-    height:100%; 
-    width:100%;
-    border:none;
-}
-.mahua-toolbar, .mahua-donate-detail{
-    position:absolute;
-    top:0;
-    right:5px;
-    background:rgba(0,0,0,0.8);
-    color:#FFF;
-    padding:5px;
-    border-bottom-right-radius:5px;
-    border-bottom-left-radius:5px;
-}
-.mahua-toolbar td{
-    text-align:right;
-    padding:2px 0;
-}
-.mahua-toolbar td a{
-    color:#FFF;
-    font-size:0.8em;
-}
-.mahua-toolbar td + td{
-    text-align:left;
-}
-.mahua-topbar{
-    position:absolute;
-    margin:0px;
-    top:0;
-    right:5px;
-    height:32px;
-    padding:5px;
-}
-.mahua-topbar li{
-  width:32px;
-  height:32px;
-  display:inline-block;
-  *zoom:1;
-  *display:inline;
-}
-.mahua-config{
-    background:url('./settings.png') no-repeat;
-}
-.mahua-donate{
-    background:url('./donate.png') no-repeat;
-}
-.mahua-session{
-    background:url('./session.png') no-repeat;
-}
-.mahua-donate-detail td{
-    text-align:right;
-}
-.mahua-spliter{
-   width:3px; 
-   position:absolute;
-   left:50%;
-   height:100%;
-   z-index:10000;
-   border:2px dashed #CCC;
-   cursor:ew-resize;
-}
-.mahua-docanme{
-   position:absolute;
-   padding:5px;
-   left:50%;
-   background:rgba(0,0,0,0.8);
-   color:#fff;
-   border-bottom-right-radius:5px;
-   border-bottom-left-radius:5px;
-   z-index:99999;
-}
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
       
       <div class="clearfix"></div>
     </div>
