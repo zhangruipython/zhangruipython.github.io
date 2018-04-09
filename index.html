@@ -258,10 +258,10 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-Hbase基础介绍" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Hbase" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2018/04/09/Hbase基础介绍/" class="article-date">
+      <a href="/2018/04/09/Hbase/" class="article-date">
       <time datetime="2018-04-09T03:16:17.000Z" itemprop="datePublished">2018-04-09</time>
 </a>
 
@@ -277,7 +277,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/09/Hbase基础介绍/">Hbase介绍</a>
+      <a class="article-title" href="/2018/04/09/Hbase/">&#39;Hbase&#39;</a>
     </h1>
   
 
@@ -287,16 +287,16 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>介绍一下Hbase,为什么使用Hbase,Hbase的运行机制</p>
+        <p>����һ��Hbase,Ϊʲôʹ��Hbase,Hbase�����л���</p>
 <p>##QuickStart</p>
-<p>###Big Table:分布式数据存储系统<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hbase:Big Table 的Java实现（非关系型数据库）</span><br></pre></td></tr></table></figure></p>
-<p>###主要特点：<br>        大：一个表可以包含上亿行，上百万列<br>        面向列：面向列的存储和权限控制，列的独立检索<br>        稀疏：对于为空的列，不占用存储空间<br>        针对每个CELL的值保存多个版本由时间戳来标识<br>        每个表由行和列组成<br>        每行由‘行键’来唯一标识，默认存在<br>        每个列属于一个特定的列族（Column Family）<br>        表中由行和列确定的存储单元称为一个单元（Cell）<br>        每个单元保存了同一份数据的多个版本，由时间戳（TimeStamp）来标识</p>
-<p>###副本的控制：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">副本的保存策略可以在建表时动态指定，默认只保存一个副本</span><br></pre></td></tr></table></figure></p>
-<pre><code>(1) 按时间控制：可以设定保存的副本的时间长度，超过该时间的部分将被删除
-(2)按最大副本数量来控制，比如说每个CULL就保存七个副本，当存入第八个副本时，第一个存入的副本将会被删除
-</code></pre><p>###Column(Hbase提供的一个列族的概念) </p>
-<pre><code>Family，当创建一个表格时，仅需要指定所有的列族，并不需要指定具体的列
-</code></pre><p>Hbase的数据存储是以行为单位的，若干行的数据被划分一个region，该region内按列族划分为Store，一个Store内部按列（Qualifier限定符）划分为多个StoreFile，StoreFile物理上对应HFile文件，HBase存储时，是以HFile为单位进行分布存储的，因此同一列的数据会被优先保存在同一个节点上<br>    这样的设计有利于数据分析。</p>
+<p>###Big Table:�ֲ�ʽ���ݴ洢ϵͳ<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hbase:Big Table ��Javaʵ�֣��ǹ�ϵ�����ݿ⣩</span><br></pre></td></tr></table></figure></p>
+<p>###��Ҫ�ص㣺<br>        ��һ������԰��������У��ϰ�����<br>        �����У������еĴ洢��Ȩ�޿��ƣ��еĶ�������<br>        ϡ�裺����Ϊ�յ��У���ռ�ô洢�ռ�<br>        ���ÿ��CELL��ֵ�������汾��ʱ�������ʶ<br>        ÿ�������к������<br>        ÿ���ɡ��м�����Ψһ��ʶ��Ĭ�ϴ���<br>        ÿ��������һ���ض������壨Column Family��<br>        �������к���ȷ���Ĵ洢��Ԫ��Ϊһ����Ԫ��Cell��<br>        ÿ����Ԫ������ͬһ�����ݵĶ���汾����ʱ�����TimeStamp������ʶ</p>
+<p>###�����Ŀ��ƣ�<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">�����ı�����Կ����ڽ���ʱ��ָ̬����Ĭ��ֻ����һ������</span><br></pre></td></tr></table></figure></p>
+<pre><code>(1) ��ʱ����ƣ������趨����ĸ�����ʱ�䳤�ȣ�������ʱ��Ĳ��ֽ���ɾ��
+(2)����󸱱����������ƣ�����˵ÿ��CULL�ͱ����߸�������������ڰ˸�����ʱ����һ������ĸ������ᱻɾ��
+</code></pre><p>###Column(Hbase�ṩ��һ������ĸ���) </p>
+<pre><code>Family��������һ�����ʱ������Ҫָ�����е����壬������Ҫָ���������
+</code></pre><p>Hbase�����ݴ洢������Ϊ��λ�ģ�����е����ݱ�����һ��region����region�ڰ����廮��ΪStore��һ��Store�ڲ����У�Qualifier�޶���������Ϊ���StoreFile��StoreFile�����϶�ӦHFile�ļ���HBase�洢ʱ������HFileΪ��λ���зֲ��洢�ģ����ͬһ�е����ݻᱻ���ȱ�����ͬһ���ڵ���<br>    ������������������ݷ�����</p>
 
       
     </div>
