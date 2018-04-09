@@ -15,17 +15,18 @@
 
 
 
-<meta name="description" content="title: Hbase组件date: 2018-04-09 18:29:23tags:[hadoop,hbase]— Hbase组件Client11、包含访问HBase的接口并维护cache来加快对HBase的访问 Zookeeper12341、保证任何时候，集群中只有一个master2、保存所有Region的寻址入口3、实时监控Region Server的上线和下线信息。并实时通知给Mast">
+<meta name="description" content="Hbase组件Client11、包含访问HBase的接口并维护cache来加快对HBase的访问 Zookeeper12341、保证任何时候，集群中只有一个master2、保存所有Region的寻址入口3、实时监控Region Server的上线和下线信息。并实时通知给Master4、存储HBase的schema和table元数据 Master12341、为Region Server分配regio">
+<meta name="keywords" content="hadoop,hbase">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Myblogs">
+<meta property="og:title" content="Hbase组件">
 <meta property="og:url" content="http://yoursite.com/2018/04/09/Hbase组件/index.html">
 <meta property="og:site_name" content="Myblogs">
-<meta property="og:description" content="title: Hbase组件date: 2018-04-09 18:29:23tags:[hadoop,hbase]— Hbase组件Client11、包含访问HBase的接口并维护cache来加快对HBase的访问 Zookeeper12341、保证任何时候，集群中只有一个master2、保存所有Region的寻址入口3、实时监控Region Server的上线和下线信息。并实时通知给Mast">
+<meta property="og:description" content="Hbase组件Client11、包含访问HBase的接口并维护cache来加快对HBase的访问 Zookeeper12341、保证任何时候，集群中只有一个master2、保存所有Region的寻址入口3、实时监控Region Server的上线和下线信息。并实时通知给Master4、存储HBase的schema和table元数据 Master12341、为Region Server分配regio">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-09T11:34:18.752Z">
+<meta property="og:updated_time" content="2018-04-09T11:36:25.204Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Myblogs">
-<meta name="twitter:description" content="title: Hbase组件date: 2018-04-09 18:29:23tags:[hadoop,hbase]— Hbase组件Client11、包含访问HBase的接口并维护cache来加快对HBase的访问 Zookeeper12341、保证任何时候，集群中只有一个master2、保存所有Region的寻址入口3、实时监控Region Server的上线和下线信息。并实时通知给Mast">
+<meta name="twitter:title" content="Hbase组件">
+<meta name="twitter:description" content="Hbase组件Client11、包含访问HBase的接口并维护cache来加快对HBase的访问 Zookeeper12341、保证任何时候，集群中只有一个master2、保存所有Region的寻址入口3、实时监控Region Server的上线和下线信息。并实时通知给Master4、存储HBase的schema和table元数据 Master12341、为Region Server分配regio">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -57,7 +58,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Myblogs</title>
+<title>Hbase组件 | Myblogs</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -259,7 +260,7 @@
   
     <div class="article-meta">
       <a href="/2018/04/09/Hbase组件/" class="article-date">
-      <time datetime="2018-04-09T10:29:23.942Z" itemprop="datePublished">2018-04-09</time>
+      <time datetime="2018-04-09T10:29:23.000Z" itemprop="datePublished">2018-04-09</time>
 </a>
 
 
@@ -270,12 +271,32 @@
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Hbase组件
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
     <div class="article-entry" itemprop="articleBody">
       
           
-        <hr>
-<p>title: Hbase组件<br>date: 2018-04-09 18:29:23<br>tags:<br>[hadoop,hbase]—</p>
-<h1 id="Hbase组件"><a href="#Hbase组件" class="headerlink" title="Hbase组件"></a>Hbase组件</h1><h2 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1、包含访问HBase的接口并维护cache来加快对HBase的访问</span><br></pre></td></tr></table></figure>
+        <h1 id="Hbase组件"><a href="#Hbase组件" class="headerlink" title="Hbase组件"></a>Hbase组件</h1><h2 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1、包含访问HBase的接口并维护cache来加快对HBase的访问</span><br></pre></td></tr></table></figure>
 <h2 id="Zookeeper"><a href="#Zookeeper" class="headerlink" title="Zookeeper"></a>Zookeeper</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1、保证任何时候，集群中只有一个master</span><br><span class="line">2、保存所有Region的寻址入口</span><br><span class="line">3、实时监控Region Server的上线和下线信息。并实时通知给Master</span><br><span class="line">4、存储HBase的schema和table元数据</span><br></pre></td></tr></table></figure>
 <h2 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1、为Region Server分配region</span><br><span class="line">2、负责Region Server的负载均衡</span><br><span class="line">3、发现失效的RegionSever并重新分配其上的region</span><br><span class="line">4、管理用户对table的增删改查操作</span><br></pre></td></tr></table></figure>
 <h2 id="RegionServer"><a href="#RegionServer" class="headerlink" title="RegionServer"></a>RegionServer</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1、维护region，处理对这些region的I/O请求</span><br><span class="line">2、负责切分在运行过程中变得过大的region</span><br></pre></td></tr></table></figure>
@@ -287,12 +308,12 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2018/04/09/Hbase组件/"></a></p>
+        <p><span>本文标题:</span><a href="/2018/04/09/Hbase组件/">Hbase组件</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">张睿</a></p>
         <p><span>发布时间:</span>2018-04-09, 18:29:23</p>
-        <p><span>最后更新:</span>2018-04-09, 19:34:18</p>
+        <p><span>最后更新:</span>2018-04-09, 19:36:25</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2018/04/09/Hbase组件/" title="">http://yoursite.com/2018/04/09/Hbase组件/</a>
+            <span>原始链接:</span><a class="post-url" href="/2018/04/09/Hbase组件/" title="Hbase组件">http://yoursite.com/2018/04/09/Hbase组件/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/04/09/Hbase组件/　　作者: 张睿" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -362,7 +383,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Hbase组件　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -378,7 +399,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2018/04/09/Hbase组件/" data-title="" data-url="http://yoursite.com/2018/04/09/Hbase组件/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/04/09/Hbase组件/" data-title="Hbase组件" data-url="http://yoursite.com/2018/04/09/Hbase组件/"></div>
     <script>
         var duoshuoQuery = {short_name:"spicy"};
         var loadComment = function(){

@@ -328,7 +328,7 @@
   
     <div class="article-meta">
       <a href="/2018/04/09/Hbase组件/" class="article-date">
-      <time datetime="2018-04-09T10:29:23.942Z" itemprop="datePublished">2018-04-09</time>
+      <time datetime="2018-04-09T10:29:23.000Z" itemprop="datePublished">2018-04-09</time>
 </a>
 
 
@@ -339,12 +339,21 @@
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/09/Hbase组件/">Hbase组件</a>
+    </h1>
+  
+
+      </header>
+      
+    
     <div class="article-entry" itemprop="articleBody">
       
           
-        <hr>
-<p>title: Hbase组件<br>date: 2018-04-09 18:29:23<br>tags:<br>[hadoop,hbase]—</p>
-<h1 id="Hbase组件"><a href="#Hbase组件" class="headerlink" title="Hbase组件"></a>Hbase组件</h1><h2 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1、包含访问HBase的接口并维护cache来加快对HBase的访问</span><br></pre></td></tr></table></figure>
+        <h1 id="Hbase组件"><a href="#Hbase组件" class="headerlink" title="Hbase组件"></a>Hbase组件</h1><h2 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1、包含访问HBase的接口并维护cache来加快对HBase的访问</span><br></pre></td></tr></table></figure>
 <h2 id="Zookeeper"><a href="#Zookeeper" class="headerlink" title="Zookeeper"></a>Zookeeper</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1、保证任何时候，集群中只有一个master</span><br><span class="line">2、保存所有Region的寻址入口</span><br><span class="line">3、实时监控Region Server的上线和下线信息。并实时通知给Master</span><br><span class="line">4、存储HBase的schema和table元数据</span><br></pre></td></tr></table></figure>
 <h2 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1、为Region Server分配region</span><br><span class="line">2、负责Region Server的负载均衡</span><br><span class="line">3、发现失效的RegionSever并重新分配其上的region</span><br><span class="line">4、管理用户对table的增删改查操作</span><br></pre></td></tr></table></figure>
 <h2 id="RegionServer"><a href="#RegionServer" class="headerlink" title="RegionServer"></a>RegionServer</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1、维护region，处理对这些region的I/O请求</span><br><span class="line">2、负责切分在运行过程中变得过大的region</span><br></pre></td></tr></table></figure>
@@ -357,6 +366,10 @@
       
 
       
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
+    </div>
+
       
       <div class="clearfix"></div>
     </div>
