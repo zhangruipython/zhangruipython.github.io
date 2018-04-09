@@ -15,13 +15,17 @@
 
 
 
-<meta property="og:type" content="website">
+<meta name="description" content="title: Hbasedate: 2018-04-09 18:29:23tags:[hadoop,hbase]— Hbase���Client11����������HBase�Ľӿڲ�ά��cache���ӿ��HBase�ķ��� Zookeeper12341����֤�κ�ʱ�򣬼�Ⱥ��ֻ��һ��master2����������Region��Ѱַ���3��ʵʱ���Region">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Myblogs">
-<meta property="og:url" content="http://yoursite.com/tags/hadoop/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/04/09/Hbase组件/index.html">
 <meta property="og:site_name" content="Myblogs">
+<meta property="og:description" content="title: Hbasedate: 2018-04-09 18:29:23tags:[hadoop,hbase]— Hbase���Client11����������HBase�Ľӿڲ�ά��cache���ӿ��HBase�ķ��� Zookeeper12341����֤�κ�ʱ�򣬼�Ⱥ��ֻ��һ��master2����������Region��Ѱַ���3��ʵʱ���Region">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-09T10:30:13.379Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Myblogs">
+<meta name="twitter:description" content="title: Hbasedate: 2018-04-09 18:29:23tags:[hadoop,hbase]— Hbase���Client11����������HBase�Ľӿڲ�ά��cache���ӿ��HBase�ķ��� Zookeeper12341����֤�κ�ʱ�򣬼�Ⱥ��ֻ��һ��master2����������Region��Ѱַ���3��ʵʱ���Region">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -53,7 +57,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Tag: hadoop | Myblogs</title>
+<title>Myblogs</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -63,9 +67,9 @@
         fancybox: true,
         animate: true,
         isHome: false,
-        isPost: false,
+        isPost: true,
         isArchive: false,
-        isTag: true,
+        isTag: false,
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
@@ -251,122 +255,166 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap">
+      <div class="body-wrap"><article id="post-Hbase组件" class="article article-type-post" itemscope itemprop="blogPost">
   
+    <div class="article-meta">
+      <a href="/2018/04/09/Hbase组件/" class="article-date">
+      <time datetime="2018-04-09T10:29:23.942Z" itemprop="datePublished">2018-04-09</time>
+</a>
+
+
+    </div>
   
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
     
     
+    <div class="article-entry" itemprop="articleBody">
       
+          
+        <hr>
+<p>title: Hbase<br>date: 2018-04-09 18:29:23<br>tags:<br>[hadoop,hbase]—</p>
+<h1 id="Hbase���"><a href="#Hbase���" class="headerlink" title="Hbase���"></a>Hbase���</h1><h2 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1����������HBase�Ľӿڲ�ά��cache���ӿ��HBase�ķ���</span><br></pre></td></tr></table></figure>
+<h2 id="Zookeeper"><a href="#Zookeeper" class="headerlink" title="Zookeeper"></a>Zookeeper</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1����֤�κ�ʱ�򣬼�Ⱥ��ֻ��һ��master</span><br><span class="line">2����������Region��Ѱַ���</span><br><span class="line">3��ʵʱ���Region Server�����ߺ�������Ϣ����ʵʱ֪ͨ��Master</span><br><span class="line">4���洢HBase��schema��tableԪ����</span><br></pre></td></tr></table></figure>
+<h2 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1��ΪRegion Server����region</span><br><span class="line">2������Region Server�ĸ��ؾ���</span><br><span class="line">3������ʧЧ��RegionSever�����·������ϵ�region</span><br><span class="line">4�������û���table����ɾ�Ĳ����</span><br></pre></td></tr></table></figure>
+<h2 id="RegionServer"><a href="#RegionServer" class="headerlink" title="RegionServer"></a>RegionServer</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1��ά��region���������Щregion��I/O����</span><br><span class="line">2�������з������й����б�ù����region</span><br></pre></td></tr></table></figure>
+
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
+    </div>
     
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2018/04/09/Hbase存储结构/" class="archive-article-date">
-      <time datetime="2018-04-09T08:51:00.000Z" itemprop="datePublished">04-09</time>
-</a>
-
-
-        </div>
-         
+  </div>
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/09/Hbase存储结构/">Hbase存储结构</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-
-          
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/04/09/Hbase组件/"></a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">张睿</a></p>
+        <p><span>发布时间:</span>2018-04-09, 18:29:23</p>
+        <p><span>最后更新:</span>2018-04-09, 18:30:13</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/04/09/Hbase组件/" title="">http://yoursite.com/2018/04/09/Hbase组件/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/04/09/Hbase组件/　　作者: 张睿" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
     </div>
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/04/09/Hbase存储结构/">
+                    Hbase存储结构
+                </a>
+            </div>
+        
+    </nav>
+
+  
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2018/04/09/Hbase基础介绍/" class="archive-article-date">
-      <time datetime="2018-04-09T03:16:17.000Z" itemprop="datePublished">04-09</time>
-</a>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hbase���"><span class="toc-number">1.</span> <span class="toc-text">Hbase���</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Client"><span class="toc-number">1.1.</span> <span class="toc-text">Client</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Zookeeper"><span class="toc-number">1.2.</span> <span class="toc-text">Zookeeper</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Master"><span class="toc-number">1.3.</span> <span class="toc-text">Master</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RegionServer"><span class="toc-number">1.4.</span> <span class="toc-text">RegionServer</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
 
 
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
         </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/09/Hbase基础介绍/">Hbase介绍</a>
-    </h1>
-  
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
 
-        <div class="article-info info-on-archive">
-          
+    
+</div>
 
-          
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/04/09/Hbase组件/" data-title="" data-url="http://yoursite.com/2018/04/09/Hbase组件/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"spicy"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/04/09/Hbase存储结构/" title="下一篇: Hbase存储结构">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
     </div>
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2018/04/02/hdfs/" class="archive-article-date">
-      <time datetime="2018-04-02T03:08:58.000Z" itemprop="datePublished">04-02</time>
-</a>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase组件/">Hbase组件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase存储结构/">Hbase存储结构</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase基础介绍/">Hbase介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs/">hdfs</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/31/hello-world/">Hello World</a></li></ul>
 
 
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/02/hdfs/">hdfs</a>
-    </h1>
-  
 
-        <div class="article-info info-on-archive">
-          
 
-          
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hdfs/">hdfs</a></li></ul>
-    </div>
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-
+    <script>
+        
+    </script>
 </div>
       <footer id="footer">
     <div class="outer">
