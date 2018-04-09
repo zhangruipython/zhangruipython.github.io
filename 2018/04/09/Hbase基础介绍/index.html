@@ -18,14 +18,14 @@
 <meta name="description" content="介绍一下Hbase,为什么使用Hbase,Hbase的运行机制 ##QuickStart ###Big Table:分布式数据存储系统1Hbase:Big Table 的Java实现（非关系型数据库） ###主要特点：        大：一个表可以包含上亿行，上百万列        面向列：面向列的存储和权限控制，列的独立检索        稀疏：对于为空的列，不占用存储空间        针对每">
 <meta name="keywords" content="hadoop,hbase">
 <meta property="og:type" content="article">
-<meta property="og:title" content="&#39;Hbase&#39;">
+<meta property="og:title" content="Hbase介绍">
 <meta property="og:url" content="http://yoursite.com/2018/04/09/Hbase基础介绍/index.html">
 <meta property="og:site_name" content="Myblogs">
 <meta property="og:description" content="介绍一下Hbase,为什么使用Hbase,Hbase的运行机制 ##QuickStart ###Big Table:分布式数据存储系统1Hbase:Big Table 的Java实现（非关系型数据库） ###主要特点：        大：一个表可以包含上亿行，上百万列        面向列：面向列的存储和权限控制，列的独立检索        稀疏：对于为空的列，不占用存储空间        针对每">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-09T04:26:55.940Z">
+<meta property="og:updated_time" content="2018-04-09T04:29:12.893Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="&#39;Hbase&#39;">
+<meta name="twitter:title" content="Hbase介绍">
 <meta name="twitter:description" content="介绍一下Hbase,为什么使用Hbase,Hbase的运行机制 ##QuickStart ###Big Table:分布式数据存储系统1Hbase:Big Table 的Java实现（非关系型数据库） ###主要特点：        大：一个表可以包含上亿行，上百万列        面向列：面向列的存储和权限控制，列的独立检索        稀疏：对于为空的列，不占用存储空间        针对每">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
@@ -58,7 +58,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>&#39;Hbase&#39; | Myblogs</title>
+<title>Hbase介绍 | Myblogs</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -275,7 +275,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      &#39;Hbase&#39;
+      Hbase介绍
     </h1>
   
 
@@ -314,12 +314,12 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2018/04/09/Hbase基础介绍/">&#39;Hbase&#39;</a></p>
+        <p><span>本文标题:</span><a href="/2018/04/09/Hbase基础介绍/">Hbase介绍</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">张睿</a></p>
         <p><span>发布时间:</span>2018-04-09, 11:16:17</p>
-        <p><span>最后更新:</span>2018-04-09, 12:26:55</p>
+        <p><span>最后更新:</span>2018-04-09, 12:29:12</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2018/04/09/Hbase基础介绍/" title="&#39;Hbase&#39;">http://yoursite.com/2018/04/09/Hbase基础介绍/</a>
+            <span>原始链接:</span><a class="post-url" href="/2018/04/09/Hbase基础介绍/" title="Hbase介绍">http://yoursite.com/2018/04/09/Hbase基础介绍/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/04/09/Hbase基础介绍/　　作者: 张睿" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -383,7 +383,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"'Hbase'　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Hbase介绍　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -399,7 +399,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2018/04/09/Hbase基础介绍/" data-title="&#39;Hbase&#39;" data-url="http://yoursite.com/2018/04/09/Hbase基础介绍/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/04/09/Hbase基础介绍/" data-title="Hbase介绍" data-url="http://yoursite.com/2018/04/09/Hbase基础介绍/"></div>
     <script>
         var duoshuoQuery = {short_name:"spicy"};
         var loadComment = function(){
@@ -434,7 +434,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase基础介绍/">'Hbase'</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs/">hdfs</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/31/hello-world/">Hello World</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase基础介绍/">Hbase介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs/">hdfs</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/31/hello-world/">Hello World</a></li></ul>
 
 
 
