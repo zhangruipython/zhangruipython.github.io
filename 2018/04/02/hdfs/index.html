@@ -15,18 +15,18 @@
 
 
 
-<meta name="description" content="Hadoop分布式文件系统##一个文件被分布在多个机器上存储 ##高容错性的系统 ##高吞吐量的数据访问 ##适合大规模数据集的使用 ##HBase基于HDFS  每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位一般为512字节。Block：大文件会被分割为多个Block进行存储，Block默认大小为128M每一个Block 会在DataNode上存储多个副本，默认值为3。HDFS的块比磁盘">
+<meta name="description" content="Hadoop分布式文件系统一个文件被分布在多个机器上存储高容错性的系统高吞吐量的数据访问适合大规模数据集的使用HBase基于HDFS 每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位一般为512字节。Block：大文件会被分割为多个Block进行存储，Block默认大小为128M每一个Block 会在DataNode上存储多个副本，默认值为3。HDFS的块比磁盘的块大很多，其目的是为了最小化">
 <meta name="keywords" content="hadoop,hdfs">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hdfs">
 <meta property="og:url" content="http://yoursite.com/2018/04/02/hdfs/index.html">
 <meta property="og:site_name" content="Myblogs">
-<meta property="og:description" content="Hadoop分布式文件系统##一个文件被分布在多个机器上存储 ##高容错性的系统 ##高吞吐量的数据访问 ##适合大规模数据集的使用 ##HBase基于HDFS  每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位一般为512字节。Block：大文件会被分割为多个Block进行存储，Block默认大小为128M每一个Block 会在DataNode上存储多个副本，默认值为3。HDFS的块比磁盘">
+<meta property="og:description" content="Hadoop分布式文件系统一个文件被分布在多个机器上存储高容错性的系统高吞吐量的数据访问适合大规模数据集的使用HBase基于HDFS 每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位一般为512字节。Block：大文件会被分割为多个Block进行存储，Block默认大小为128M每一个Block 会在DataNode上存储多个副本，默认值为3。HDFS的块比磁盘的块大很多，其目的是为了最小化">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-02T03:13:23.584Z">
+<meta property="og:updated_time" content="2018-04-09T05:04:24.482Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hdfs">
-<meta name="twitter:description" content="Hadoop分布式文件系统##一个文件被分布在多个机器上存储 ##高容错性的系统 ##高吞吐量的数据访问 ##适合大规模数据集的使用 ##HBase基于HDFS  每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位一般为512字节。Block：大文件会被分割为多个Block进行存储，Block默认大小为128M每一个Block 会在DataNode上存储多个副本，默认值为3。HDFS的块比磁盘">
+<meta name="twitter:description" content="Hadoop分布式文件系统一个文件被分布在多个机器上存储高容错性的系统高吞吐量的数据访问适合大规模数据集的使用HBase基于HDFS 每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位一般为512字节。Block：大文件会被分割为多个Block进行存储，Block默认大小为128M每一个Block 会在DataNode上存储多个副本，默认值为3。HDFS的块比磁盘的块大很多，其目的是为了最小化">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -183,7 +183,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdfs/">hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yelee/">yelee</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdfs/">hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yelee/">yelee</a></li></ul>
                     </div>
                 </section>
                 
@@ -296,23 +296,21 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="Hadoop分布式文件系统"><a href="#Hadoop分布式文件系统" class="headerlink" title="Hadoop分布式文件系统"></a>Hadoop分布式文件系统</h1><p>##一个文件被分布在多个机器上存储</p>
-<p>##高容错性的系统</p>
-<p>##高吞吐量的数据访问</p>
-<p>##适合大规模数据集的使用</p>
-<p>##HBase基于HDFS</p>
-<blockquote>
+        <h1 id="Hadoop分布式文件系统"><a href="#Hadoop分布式文件系统" class="headerlink" title="Hadoop分布式文件系统"></a>Hadoop分布式文件系统</h1><h2 id="一个文件被分布在多个机器上存储"><a href="#一个文件被分布在多个机器上存储" class="headerlink" title="一个文件被分布在多个机器上存储"></a>一个文件被分布在多个机器上存储</h2><h2 id="高容错性的系统"><a href="#高容错性的系统" class="headerlink" title="高容错性的系统"></a>高容错性的系统</h2><h2 id="高吞吐量的数据访问"><a href="#高吞吐量的数据访问" class="headerlink" title="高吞吐量的数据访问"></a>高吞吐量的数据访问</h2><h2 id="适合大规模数据集的使用"><a href="#适合大规模数据集的使用" class="headerlink" title="适合大规模数据集的使用"></a>适合大规模数据集的使用</h2><h2 id="HBase基于HDFS"><a href="#HBase基于HDFS" class="headerlink" title="HBase基于HDFS"></a>HBase基于HDFS</h2><blockquote>
 <p>每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位<br>一般为512字节。<br>Block：大文件会被分割为多个Block进行存储，Block默认大小为128M<br>每一个Block 会在DataNode上存储多个副本，默认值为3。<br>HDFS的块比磁盘的块大很多，其目的是为了最小化寻址开销。<br>128M-》512字节一个block </p>
 </blockquote>
-<p>###对分布式文件系统中的块进行抽象：<br>    更好应对大文件的存储<br>    简化了存储系统的设计<br>    适用于数据备份</p>
-<p>###主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责：<br>    记录文件是如何分割成数据块，以及存储数据块的数据节点的信息<br>    对内存和I/O进行集中管理<br>    保存文件与block的对应关系/block与节点的对应关系</p>
-<blockquote>
+<h3 id="对分布式文件系统中的块进行抽象："><a href="#对分布式文件系统中的块进行抽象：" class="headerlink" title="对分布式文件系统中的块进行抽象："></a>对分布式文件系统中的块进行抽象：</h3><pre><code>更好应对大文件的存储
+简化了存储系统的设计
+适用于数据备份
+</code></pre><h3 id="主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责："><a href="#主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责：" class="headerlink" title="主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责："></a>主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责：</h3><pre><code>记录文件是如何分割成数据块，以及存储数据块的数据节点的信息
+对内存和I/O进行集中管理
+保存文件与block的对应关系/block与节点的对应关系
+</code></pre><blockquote>
 <p>每个集群都有一个SecondaryNameNode进程，负责监控HDFS状态的辅助后台进程<br>不接受或记录任何实时的数据变化<br>SecondaryNameNode进程会定期与NameNode通信每隔三秒发送心跳包，每隔一<br>个小时发送快报告（当前从节点数据块的实际信息），并定期保存HDFS元数据的快照<br>也可以用作备用的NameNode。</p>
 </blockquote>
-<p>##NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系</p>
-<p>###主要使用以下文件<br>   <strong> Fsimage :保存文件系统的映射信息</strong></p>
+<h2 id="NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系"><a href="#NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系" class="headerlink" title="NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系"></a>NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系</h2><h3 id="主要使用以下文件"><a href="#主要使用以下文件" class="headerlink" title="主要使用以下文件"></a>主要使用以下文件</h3><p>   <strong> Fsimage :保存文件系统的映射信息</strong></p>
 <p>   <strong> Edits：用来临时性记录数据改变的情况的文件（上个检查点后用户对于元数据的修改操作）</strong></p>
-<p>##checkpoint机制（secondaryNameNode负责） 用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点<br><strong>    CheckPoint启动时，NameNode创建一个新文件来接受</strong></p>
+<h2 id="checkpoint机制（secondaryNameNode负责）-用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点"><a href="#checkpoint机制（secondaryNameNode负责）-用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点" class="headerlink" title="checkpoint机制（secondaryNameNode负责） 用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点"></a>checkpoint机制（secondaryNameNode负责） 用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点</h2><p><strong>    CheckPoint启动时，NameNode创建一个新文件来接受</strong></p>
 <p><strong>    日志文件系统的变化，该文件名为edits.new</strong></p>
 <p><strong>    文件edits不再接受变化新的变化时，和fsimage一起拷贝到CheckPointNode所在文件系统中</strong></p>
 <p><strong> CheckPointNode将两个文件合并成产生fsimage.ckpt文件</strong></p>
@@ -330,7 +328,7 @@
         <p><span>本文标题:</span><a href="/2018/04/02/hdfs/">hdfs</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">张睿</a></p>
         <p><span>发布时间:</span>2018-04-02, 11:08:58</p>
-        <p><span>最后更新:</span>2018-04-02, 11:13:23</p>
+        <p><span>最后更新:</span>2018-04-09, 13:04:24</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2018/04/02/hdfs/" title="hdfs">http://yoursite.com/2018/04/02/hdfs/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/04/02/hdfs/　　作者: 张睿" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -344,6 +342,12 @@
 
 
     <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/04/09/Hbase基础介绍/">
+                    Hbase介绍
+                </a>
+            </div>
         
         
             <div id="article-nav-older" class="article-nav-title">
@@ -360,7 +364,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hadoop分布式文件系统"><span class="toc-number">1.</span> <span class="toc-text">Hadoop分布式文件系统</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hadoop分布式文件系统"><span class="toc-number">1.</span> <span class="toc-text">Hadoop分布式文件系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一个文件被分布在多个机器上存储"><span class="toc-number">1.1.</span> <span class="toc-text">一个文件被分布在多个机器上存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#高容错性的系统"><span class="toc-number">1.2.</span> <span class="toc-text">高容错性的系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#高吞吐量的数据访问"><span class="toc-number">1.3.</span> <span class="toc-text">高吞吐量的数据访问</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适合大规模数据集的使用"><span class="toc-number">1.4.</span> <span class="toc-text">适合大规模数据集的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HBase基于HDFS"><span class="toc-number">1.5.</span> <span class="toc-text">HBase基于HDFS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#对分布式文件系统中的块进行抽象："><span class="toc-number">1.5.1.</span> <span class="toc-text">对分布式文件系统中的块进行抽象：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责："><span class="toc-number">1.5.2.</span> <span class="toc-text">主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系"><span class="toc-number">1.6.</span> <span class="toc-text">NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#主要使用以下文件"><span class="toc-number">1.6.1.</span> <span class="toc-text">主要使用以下文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#checkpoint机制（secondaryNameNode负责）-用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点"><span class="toc-number">1.7.</span> <span class="toc-text">checkpoint机制（secondaryNameNode负责） 用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点</span></a></li></ol></li></ol>
         
     </div>
     <style>
@@ -435,7 +439,9 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2018/04/09/Hbase基础介绍/" title="上一篇: Hbase介绍">
+                <i class="fa fa-angle-left"></i>
+            </a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
@@ -447,7 +453,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs/">hdfs</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/31/hello-world/">Hello World</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase基础介绍/">Hbase介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs/">hdfs</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/31/hello-world/">Hello World</a></li></ul>
 
 
 
