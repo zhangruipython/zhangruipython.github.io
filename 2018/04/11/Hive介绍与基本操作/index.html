@@ -15,18 +15,18 @@
 
 
 
-<meta name="description" content="Hbase存储结构Hbase和关系型数据库的区别12关系型数据库按行存储（.csv文件）HBase的存储结构基于HDFS Region1234561、每个Region对应一个HRegion实例，这些实例被HRegionServer管理一个表的所有Region会分布在不同的region服务器上被管理，但一个Region内的数据只会被一个服务器所管理。2、物理上数据存储在HDFS上，由Region服务">
-<meta name="keywords" content="hadoop,hbase">
+<meta name="description" content="hive组件123451、用户接口:包括Hive Shell 、Thrift客户端 、Web端口等2、Thrift服务器:当Hive以服务器模式运行时，可以作为Thrift服务器供客户端连接3、解析器:解析并执行HiveQL语句，由解释器、编译器、优化器和执行器组成4、元数据库存储Hive元数据，通常使用MySQL或Derby5、Hadoop数据仓库存储于HDFS上，并由MapReduce执行解析">
+<meta name="keywords" content="hadoop,hive">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hbase存储结构">
-<meta property="og:url" content="http://yoursite.com/2018/04/09/Hbase存储结构/index.html">
+<meta property="og:title" content="Hive">
+<meta property="og:url" content="http://yoursite.com/2018/04/11/Hive介绍与基本操作/index.html">
 <meta property="og:site_name" content="Myblogs">
-<meta property="og:description" content="Hbase存储结构Hbase和关系型数据库的区别12关系型数据库按行存储（.csv文件）HBase的存储结构基于HDFS Region1234561、每个Region对应一个HRegion实例，这些实例被HRegionServer管理一个表的所有Region会分布在不同的region服务器上被管理，但一个Region内的数据只会被一个服务器所管理。2、物理上数据存储在HDFS上，由Region服务">
+<meta property="og:description" content="hive组件123451、用户接口:包括Hive Shell 、Thrift客户端 、Web端口等2、Thrift服务器:当Hive以服务器模式运行时，可以作为Thrift服务器供客户端连接3、解析器:解析并执行HiveQL语句，由解释器、编译器、优化器和执行器组成4、元数据库存储Hive元数据，通常使用MySQL或Derby5、Hadoop数据仓库存储于HDFS上，并由MapReduce执行解析">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-09T09:06:32.756Z">
+<meta property="og:updated_time" content="2018-04-11T04:17:05.085Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hbase存储结构">
-<meta name="twitter:description" content="Hbase存储结构Hbase和关系型数据库的区别12关系型数据库按行存储（.csv文件）HBase的存储结构基于HDFS Region1234561、每个Region对应一个HRegion实例，这些实例被HRegionServer管理一个表的所有Region会分布在不同的region服务器上被管理，但一个Region内的数据只会被一个服务器所管理。2、物理上数据存储在HDFS上，由Region服务">
+<meta name="twitter:title" content="Hive">
+<meta name="twitter:description" content="hive组件123451、用户接口:包括Hive Shell 、Thrift客户端 、Web端口等2、Thrift服务器:当Hive以服务器模式运行时，可以作为Thrift服务器供客户端连接3、解析器:解析并执行HiveQL语句，由解释器、编译器、优化器和执行器组成4、元数据库存储Hive元数据，通常使用MySQL或Derby5、Hadoop数据仓库存储于HDFS上，并由MapReduce执行解析">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -58,7 +58,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Hbase存储结构 | Myblogs</title>
+<title>Hive | Myblogs</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -256,11 +256,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-Hbase存储结构" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Hive介绍与基本操作" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2018/04/09/Hbase存储结构/" class="article-date">
-      <time datetime="2018-04-09T08:51:00.000Z" itemprop="datePublished">2018-04-09</time>
+      <a href="/2018/04/11/Hive介绍与基本操作/" class="article-date">
+      <time datetime="2018-04-11T04:05:40.000Z" itemprop="datePublished">2018-04-11</time>
 </a>
 
 
@@ -275,7 +275,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Hbase存储结构
+      Hive
     </h1>
   
 
@@ -286,7 +286,7 @@
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hive/">hive</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -296,9 +296,8 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="Hbase存储结构"><a href="#Hbase存储结构" class="headerlink" title="Hbase存储结构"></a>Hbase存储结构</h1><h3 id="Hbase和关系型数据库的区别"><a href="#Hbase和关系型数据库的区别" class="headerlink" title="Hbase和关系型数据库的区别"></a>Hbase和关系型数据库的区别</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">关系型数据库按行存储（.csv文件）</span><br><span class="line">HBase的存储结构基于HDFS</span><br></pre></td></tr></table></figure>
-<h3 id="Region"><a href="#Region" class="headerlink" title="Region"></a>Region</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1、每个Region对应一个HRegion实例，这些实例被HRegionServer管理</span><br><span class="line">一个表的所有Region会分布在不同的region服务器上被管理，但一个Region</span><br><span class="line">内的数据只会被一个服务器所管理。</span><br><span class="line">2、物理上数据存储在HDFS上，由Region服务器提供数据服务。</span><br><span class="line">每个Region由一个或多个Store组成，每个Store保存一个列族的所有数据。</span><br><span class="line">3、Store是Hbase存储的核心，每个Store由一个MemStore和零至多个StoreFile组成，StoreFile以HFile的格式存储在HDFS上。`</span><br></pre></td></tr></table></figure>
-<h2 id="store"><a href="#store" class="headerlink" title="store"></a>store</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1、store按列族划分</span><br><span class="line">2、StoreFile:按列划分</span><br><span class="line">3、HFile：实际存入hdfs的文件，同一列的数据会被存在同一节点</span><br><span class="line">4、HLog用于灾难备份，使用了预写式日志（WAL）</span><br><span class="line">5、每个Region服务器对应一个Hlog，所以来自不同表的region日志是混在一起的，这样做的目的是写入日志时只需要追加单个文件即可。</span><br></pre></td></tr></table></figure>
+        <h2 id="hive组件"><a href="#hive组件" class="headerlink" title="hive组件"></a>hive组件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1、用户接口:包括Hive Shell 、Thrift客户端 、Web端口等</span><br><span class="line">2、Thrift服务器:当Hive以服务器模式运行时，可以作为Thrift服务器供客户端连接</span><br><span class="line">3、解析器:解析并执行HiveQL语句，由解释器、编译器、优化器和执行器组成</span><br><span class="line">4、元数据库存储Hive元数据，通常使用MySQL或Derby</span><br><span class="line">5、Hadoop数据仓库存储于HDFS上，并由MapReduce执行解析器生成的查询计划</span><br></pre></td></tr></table></figure>
+<h2 id="HiveQL"><a href="#HiveQL" class="headerlink" title="HiveQL"></a>HiveQL</h2><p>1、HiveQL与大多数SQL语法兼容<br>2、HiveQL并不完全支持SQL标准，如：不支持更新操作和事务。由hbase底层决定</p>
 
       
     </div>
@@ -307,13 +306,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2018/04/09/Hbase存储结构/">Hbase存储结构</a></p>
+        <p><span>本文标题:</span><a href="/2018/04/11/Hive介绍与基本操作/">Hive</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">张睿</a></p>
-        <p><span>发布时间:</span>2018-04-09, 16:51:00</p>
-        <p><span>最后更新:</span>2018-04-09, 17:06:32</p>
+        <p><span>发布时间:</span>2018-04-11, 12:05:40</p>
+        <p><span>最后更新:</span>2018-04-11, 12:17:05</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2018/04/09/Hbase存储结构/" title="Hbase存储结构">http://yoursite.com/2018/04/09/Hbase存储结构/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/04/09/Hbase存储结构/　　作者: 张睿" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2018/04/11/Hive介绍与基本操作/" title="Hive">http://yoursite.com/2018/04/11/Hive介绍与基本操作/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/04/11/Hive介绍与基本操作/　　作者: 张睿" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -325,16 +324,10 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2018/04/09/Hbase组件/">
-                    Hbase组件
-                </a>
-            </div>
-        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2018/04/09/Hbase基础介绍/">
-                    Hbase介绍
+                <a href="/2018/04/09/unix哲学/">
+                    unix 哲学
                 </a>
             </div>
         
@@ -346,7 +339,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hbase存储结构"><span class="toc-number">1.</span> <span class="toc-text">Hbase存储结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hbase和关系型数据库的区别"><span class="toc-number">1.0.1.</span> <span class="toc-text">Hbase和关系型数据库的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Region"><span class="toc-number">1.0.2.</span> <span class="toc-text">Region</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#store"><span class="toc-number">1.1.</span> <span class="toc-text">store</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#hive组件"><span class="toc-number">1.</span> <span class="toc-text">hive组件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HiveQL"><span class="toc-number">2.</span> <span class="toc-text">HiveQL</span></a></li></ol>
         
     </div>
     <style>
@@ -382,7 +375,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Hbase存储结构　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Hive　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -398,7 +391,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2018/04/09/Hbase存储结构/" data-title="Hbase存储结构" data-url="http://yoursite.com/2018/04/09/Hbase存储结构/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/04/11/Hive介绍与基本操作/" data-title="Hive" data-url="http://yoursite.com/2018/04/11/Hive介绍与基本操作/"></div>
     <script>
         var duoshuoQuery = {short_name:"spicy"};
         var loadComment = function(){
@@ -421,15 +414,13 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2018/04/09/Hbase组件/" title="上一篇: Hbase组件">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2018/04/09/Hbase基础介绍/" title="下一篇: Hbase介绍">
+            <a href="/2018/04/09/unix哲学/" title="下一篇: unix 哲学">
                 <i class="fa fa-angle-right"></i>
             </a>
         
