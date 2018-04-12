@@ -183,7 +183,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdfs/">hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/philosophy/">philosophy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yelee/">yelee</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/MapReduce/">MapReduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdfs/">hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/philosophy/">philosophy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yelee/">yelee</a></li></ul>
                     </div>
                 </section>
                 
@@ -257,6 +257,71 @@
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-MapReduce" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/04/12/MapReduce/" class="article-date">
+      <time datetime="2018-04-12T13:51:45.000Z" itemprop="datePublished">2018-04-12</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/12/MapReduce/">MapReduce</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="MapReduce运行步骤"><a href="#MapReduce运行步骤" class="headerlink" title="MapReduce运行步骤"></a>MapReduce运行步骤</h2><p>1、【input阶段】获取输入数据进行分片作为map的输入<br>2、【map阶段】过程对某种输入格式的一条记录解析一条或多条记录<br>3、【shffle阶段】对中间数据的控制，作为reduce的输入<br>4、【reduce阶段】对相同key的数据进行合并<br>5、【output阶段】按照格式输出到指定目录</p>
+<h3 id="MapReduce作业（job）"><a href="#MapReduce作业（job）" class="headerlink" title="MapReduce作业（job）:"></a>MapReduce作业（job）:</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">客户端需要执行的一个工作单元，它包括输入数据，MapReduce程序和配置信息</span><br></pre></td></tr></table></figure>
+<h3 id="任务（task）："><a href="#任务（task）：" class="headerlink" title="任务（task）："></a>任务（task）：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hadoop将作业分成若干个小任务来执行，其中包括两类任务：map任务和reduce任务。这些任务由yarn进行调度并运行在集群的节点上</span><br></pre></td></tr></table></figure>
+<h3 id="数据块（block）："><a href="#数据块（block）：" class="headerlink" title="数据块（block）："></a>数据块（block）：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HDFS上的文件被划分为大小相同的数据块，作为独立的存储单元，数据块的默认大小为128m</span><br></pre></td></tr></table></figure>
+<p>###输入分片（input split）：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Hadoop将MapReduce的数据划分为等长的小数据块，输入分片，或者简称“分片”。InputSplit分为两种情况：</span><br><span class="line">-如果数据记录位于一个数据块中，InputSplit可表示完整的数据记录集，例如第一个InputSplit</span><br><span class="line">-如果数据记录跨两个数据块，InputSplit中会包含第二个数据块的位置以及所需完整数据的偏移量。如第2-5个InputSplit。</span><br><span class="line">默认情况下InputSprit与block大小一致</span><br></pre></td></tr></table></figure></p>
+<p>Map阶段的运行结果是保存在本地文件上的</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MapReduce/">MapReduce</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-Hive介绍与基本操作" class="article article-type-post" itemscope itemprop="blogPost">
   
