@@ -183,7 +183,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/MapReduce/">MapReduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdfs/">hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/philosophy/">philosophy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yelee/">yelee</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/MapReduce/">MapReduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdfs/">hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/philosophy/">philosophy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yelee/">yelee</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
                     </div>
                 </section>
                 
@@ -257,6 +257,77 @@
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-数据库" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/06/20/数据库/" class="article-date">
+      <time datetime="2018-06-20T10:04:55.000Z" itemprop="datePublished">2018-06-20</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/20/数据库/">数据库</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="数据库好难"><a href="#数据库好难" class="headerlink" title="数据库好难"></a>数据库好难</h2><h3 id="今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了"><a href="#今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了" class="headerlink" title="今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了"></a>今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了</h3><hr>
+<p>在高并发情景下经常发生数据库丢失更新的情况，事务之间什么时候该同步，什么时候不该同步，多个事务之间的权限管理真的很复杂。一般采用<strong>隔离级别</strong>来减少出现丢失更新的可能性，至于乐观锁和悲观锁，这个要等我看完了再说。<br>SQL标准定义了隔离级别有以下四层：</p>
+<ul>
+<li>脏读：最低的隔离级别，允许一个事务去读取另一个事务中未提交的数据。</li>
+<li>读/写操作：一个事务只能读取另一个事务已经提交的数据</li>
+<li>可重复读：针对数据库同一条记录而言，可重复读会使同一条数据库记录的读/写按照一个序列化进行操作，不会产生交叉情况，从而保证同一条数据的一致性</li>
+<li>序列化：让SQL按照顺序读/写的方式，能消除数据库事务之间并发产生数据不一致的问题。</li>
+</ul>
+<center><strong><em>各类隔离级别和产生的现象</em></strong></center>
+
+
+<p>脏读（产生影响）：脏读，不可重读，幻读<br>读/写提交（产生影响）：脏读，不可重读，幻读<br>可重复读（产生影响）：幻读<br>序列化（产生影响）：（没有）</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-MapReduce" class="article article-type-post" itemscope itemprop="blogPost">
   
