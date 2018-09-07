@@ -16,15 +16,16 @@
 
 
 <meta name="description" content="初入SpringMVC遇到的坑这几天在看SpringMVC，按照书上写入门案例，然而踩到了无数的坑。。。。。 1、 导包问题刚开始我是规规矩矩的使用Maven导包，然而在运行程序时却一直报包丢失的错误 弄得很烦，在网上看了一下，发现Maven Web项目有时候需要自己手动将包导入项目 解决方法在项目右键Properties 选择Deployment Assembly  点击 Add 选择 Java">
+<meta name="keywords" content="SSM,SpringMVC">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Myblogs">
+<meta property="og:title" content="SpringMVC遇到的坑">
 <meta property="og:url" content="http://yoursite.com/2018/09/07/初入SpringMVC遇到的坑/index.html">
 <meta property="og:site_name" content="Myblogs">
 <meta property="og:description" content="初入SpringMVC遇到的坑这几天在看SpringMVC，按照书上写入门案例，然而踩到了无数的坑。。。。。 1、 导包问题刚开始我是规规矩矩的使用Maven导包，然而在运行程序时却一直报包丢失的错误 弄得很烦，在网上看了一下，发现Maven Web项目有时候需要自己手动将包导入项目 解决方法在项目右键Properties 选择Deployment Assembly  点击 Add 选择 Java">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-07T13:39:24.520Z">
+<meta property="og:updated_time" content="2018-09-07T13:50:38.650Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Myblogs">
+<meta name="twitter:title" content="SpringMVC遇到的坑">
 <meta name="twitter:description" content="初入SpringMVC遇到的坑这几天在看SpringMVC，按照书上写入门案例，然而踩到了无数的坑。。。。。 1、 导包问题刚开始我是规规矩矩的使用Maven导包，然而在运行程序时却一直报包丢失的错误 弄得很烦，在网上看了一下，发现Maven Web项目有时候需要自己手动将包导入项目 解决方法在项目右键Properties 选择Deployment Assembly  点击 Add 选择 Java">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
@@ -57,7 +58,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Myblogs</title>
+<title>SpringMVC遇到的坑 | Myblogs</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -182,7 +183,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/MapReduce/">MapReduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdfs/">hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/philosophy/">philosophy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/MapReduce/">MapReduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSM/">SSM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdfs/">hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/philosophy/">philosophy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
                     </div>
                 </section>
                 
@@ -259,7 +260,7 @@
   
     <div class="article-meta">
       <a href="/2018/09/07/初入SpringMVC遇到的坑/" class="article-date">
-      <time datetime="2018-09-07T13:34:41.691Z" itemprop="datePublished">2018-09-07</time>
+      <time datetime="2018-09-07T13:48:58.000Z" itemprop="datePublished">2018-09-07</time>
 </a>
 
 
@@ -269,6 +270,28 @@
     
       <input type="hidden" class="isFancy" />
     
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SpringMVC遇到的坑
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSM/">SSM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
     
     <div class="article-entry" itemprop="articleBody">
       
@@ -298,12 +321,12 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2018/09/07/初入SpringMVC遇到的坑/"></a></p>
+        <p><span>本文标题:</span><a href="/2018/09/07/初入SpringMVC遇到的坑/">SpringMVC遇到的坑</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">张睿</a></p>
-        <p><span>发布时间:</span>2018-09-07, 21:34:41</p>
-        <p><span>最后更新:</span>2018-09-07, 21:39:24</p>
+        <p><span>发布时间:</span>2018-09-07, 21:48:58</p>
+        <p><span>最后更新:</span>2018-09-07, 21:50:38</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2018/09/07/初入SpringMVC遇到的坑/" title="">http://yoursite.com/2018/09/07/初入SpringMVC遇到的坑/</a>
+            <span>原始链接:</span><a class="post-url" href="/2018/09/07/初入SpringMVC遇到的坑/" title="SpringMVC遇到的坑">http://yoursite.com/2018/09/07/初入SpringMVC遇到的坑/</a>
             <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/09/07/初入SpringMVC遇到的坑/　　作者: 张睿" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -367,7 +390,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"SpringMVC遇到的坑　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -383,7 +406,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2018/09/07/初入SpringMVC遇到的坑/" data-title="" data-url="http://yoursite.com/2018/09/07/初入SpringMVC遇到的坑/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/09/07/初入SpringMVC遇到的坑/" data-title="SpringMVC遇到的坑" data-url="http://yoursite.com/2018/09/07/初入SpringMVC遇到的坑/"></div>
     <script>
         var duoshuoQuery = {short_name:"spicy"};
         var loadComment = function(){
@@ -455,7 +478,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/09/07/初入SpringMVC遇到的坑/">初入SpringMVC遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/20/数据库/">数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/12/MapReduce/">MapReduce</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/11/Hive介绍与基本操作/">Hive介绍与基本操作</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/unix哲学/">unix 哲学</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase组件/">Hbase组件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase存储结构/">Hbase存储结构</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase基础介绍/">Hbase介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs/">hdfs</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/09/07/初入SpringMVC遇到的坑/">SpringMVC遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/20/数据库/">数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/12/MapReduce/">MapReduce</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/11/Hive介绍与基本操作/">Hive介绍与基本操作</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/unix哲学/">unix 哲学</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase组件/">Hbase组件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase存储结构/">Hbase存储结构</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase基础介绍/">Hbase介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs/">hdfs</a></li></ul>
 
 
 
