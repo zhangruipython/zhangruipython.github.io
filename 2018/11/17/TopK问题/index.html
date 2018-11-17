@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="张睿" />
+
+
+
+<meta name="description" content="Top K问题1、在一组非常大量的数据中找出前100大的数据 （1）每次选出101个数进行排序，最后一个数删除，多次排序（垃圾算法，时间复杂度高） 1234567891011121314151617181920212223package com.zhangrui.sort;import java.util.Arrays;import java.util.Random;/** * @author 张">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Myblogs">
+<meta property="og:url" content="http://yoursite.com/2018/11/17/TopK问题/index.html">
+<meta property="og:site_name" content="Myblogs">
+<meta property="og:description" content="Top K问题1、在一组非常大量的数据中找出前100大的数据 （1）每次选出101个数进行排序，最后一个数删除，多次排序（垃圾算法，时间复杂度高） 1234567891011121314151617181920212223package com.zhangrui.sort;import java.util.Arrays;import java.util.Random;/** * @author 张">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-17T10:33:01.098Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Myblogs">
+<meta name="twitter:description" content="Top K问题1、在一组非常大量的数据中找出前100大的数据 （1）每次选出101个数进行排序，最后一个数删除，多次排序（垃圾算法，时间复杂度高） 1234567891011121314151617181920212223package com.zhangrui.sort;import java.util.Arrays;import java.util.Random;/** * @author 张">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Myblogs" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/img/TiddlyWiki.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Myblogs</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: false
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/a.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">张睿</a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:3279164326@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://www.github.com" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" href="http://www.zhihu.com" title="知乎"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/MapReduce/">MapReduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSM/">SSM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdfs/">hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/philosophy/">philosophy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">万物皆虚，万事应允</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">张睿</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/a.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">张睿</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:3279164326@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://www.github.com" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="http://www.zhihu.com" title="知乎"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-TopK问题" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/11/17/TopK问题/" class="article-date">
+      <time datetime="2018-11-17T10:27:01.270Z" itemprop="datePublished">2018-11-17</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="Top-K问题"><a href="#Top-K问题" class="headerlink" title="Top K问题"></a>Top K问题</h2><p>1、在一组非常大量的数据中找出前100大的数据</p>
+<p>（1）每次选出101个数进行排序，最后一个数删除，多次排序（垃圾算法，时间复杂度高）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">package com.zhangrui.sort;</span><br><span class="line"></span><br><span class="line">import java.util.Arrays;</span><br><span class="line">import java.util.Random;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @author 张睿</span><br><span class="line"> * @date 2018/11/17 9:24</span><br><span class="line"> */</span><br><span class="line">public class Top100 &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        long[] arr=new long[101];</span><br><span class="line">        Random r=new Random();</span><br><span class="line">        for(int i=0;i&lt;100000;i++)&#123;</span><br><span class="line">            arr[0]=r.nextLong();</span><br><span class="line">            Arrays.sort(arr);</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i=1;i&lt;arr.length;i++)&#123;</span><br><span class="line">            long l=arr[i];</span><br><span class="line">            System.out.println(l);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（2）大顶堆，优先队列 PriorityQueue，建立一个大小为K的队列（可以直接使用java中的优先队列 PriorityQueue，基于    优先级堆的极大优先级队列，队列中元素默认按照自然顺序排序，数字就是默认最小的放在队列头）如果队列中有空位可以直接添加元素，如有元素个数达到K，将要添加的元素与优先队列中的队首（也就是优先队列中最小的数）进行比较，选出最小的元素放在队列头</p>
+<ul>
+<li><p>时间复杂度为O(nlogk)</p>
+</li>
+<li><p>队列中方法说明：</p>
+<p><strong>offer()</strong>方法往队列添加元素如果队列已满直接返回false,队列未满则直接插入并返回true</p>
+<p><strong>add()</strong>方法是对offer()方法的简单封装.如果队列已满,抛出异常new IllegalStateException(“Queue full”);</p>
+<p> <strong>put()</strong>方法往队列里插入元素,如果队列已经满,则会一直等待直到队列为空插入新元素,或者线程被中断抛出异常       <strong>remove()</strong>方法直接删除队头的元素:</p>
+<p><strong>peek()</strong>方法直接取出队头的元素,并不删除.</p>
+<p><strong>element()</strong>方法对peek方法进行简单封装,如果队头元素存在则取出并不删除,如果不存在抛出异常NoSuchElementException()</p>
+<p>  <strong>poll()</strong>方法取出并删除队头的元素,当队列为空,返回null</p>
+<p>​     <strong>take()</strong>方法取出并删除队头的元素,当队列为空,则会一直等待直到队列有新元素可以取出,或者线程被中断抛出异常</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">package com.zhangrui.sort;</span><br><span class="line"></span><br><span class="line">import java.util.*;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @author 张睿</span><br><span class="line"> * @date 2018/11/17 11:30</span><br><span class="line"> * 使用固定容量的优先队列实现TopK问题</span><br><span class="line"> */</span><br><span class="line">public class Top100Test02 &#123;</span><br><span class="line">    private PriorityQueue&lt;Integer&gt; queue;</span><br><span class="line">    private int k;//最大容量</span><br><span class="line">    public Top100Test02(int maxSize)&#123;</span><br><span class="line">        if (maxSize&lt;0)&#123;</span><br><span class="line">            throw new IllegalArgumentException();</span><br><span class="line">        &#125;</span><br><span class="line">        this.k=maxSize;</span><br><span class="line">        this.queue=new PriorityQueue&lt;&gt;(maxSize);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void addElement(Integer e)&#123;</span><br><span class="line">        if (queue.size()&lt;k)&#123;</span><br><span class="line">            queue.add(e);</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            Integer peek=queue.peek();//取得堆中最小元素</span><br><span class="line">            if(e&lt;peek)&#123;</span><br><span class="line">                queue.poll();</span><br><span class="line">                queue.add(e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        final Top100Test02 TopQueue=new Top100Test02(10);//返回前十位</span><br><span class="line">        Random random=new Random();</span><br><span class="line">        int rNum=0;</span><br><span class="line">        System.out.println(&quot;100个0~999之间的随机数&quot;);</span><br><span class="line">        for (int i=1;i&lt;=100;i++)&#123;</span><br><span class="line">            rNum=random.nextInt(1000);</span><br><span class="line">            TopQueue.addElement(rNum);</span><br><span class="line">        &#125;</span><br><span class="line">        while (!TopQueue.queue.isEmpty())&#123;</span><br><span class="line">            System.out.println(TopQueue.queue.poll());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（2）针对Top K最有效的算法是BFPRT算法（中位数的中位数算法）</p>
+<ul>
+<li><p>将n个元素每5个分为一组，分为n/5组，最后一组元素为n%5，有效组为n/5.</p>
+</li>
+<li><p>取出每一组的中位数，最后一个组的不用计算中位数，任意排序方法</p>
+</li>
+<li><p>将各组的中位数与数组开头的数据在组的顺序依次交换，这样每组的中位数就排在了每组数据的最左边</p>
+</li>
+<li><p>‘递归调用中位数选择算法查找出所有中位数的中位数，设为X，偶数个中位数的情况下设定为选取中间小的一个</p>
+</li>
+<li><p>按照X大小划分，大于或等于X的在X右边，小于X放在X左边</p>
+</li>
+<li><p>得到X元素的下标i，i左边的元素都小于X，i右边的元素都大于或等于X</p>
+<p>若i==k，返回X</p>
+<p>若i&lt;k，在小于X元素中递归查找第i小的元素</p>
+<p>若i&gt;k，在大于等于X元素中递归查找第i-k小的元素</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">package com.zhangrui.sort;</span><br><span class="line"></span><br><span class="line">import java.util.Random;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @author 张睿</span><br><span class="line"> * @date 2018/11/17 15:58</span><br><span class="line"> * BFPRT算法</span><br><span class="line"> */</span><br><span class="line">public class Top100Test03 &#123;</span><br><span class="line">    private static int[] a=null;</span><br><span class="line">    //冒泡排序</span><br><span class="line">    public static void sort(int first,int end)&#123;</span><br><span class="line">        for(int flag=first;flag&lt;end;flag++)&#123;</span><br><span class="line">            for(int i=end;i&gt;flag;i--)&#123;</span><br><span class="line">                if(a[i]&lt;a[i-1])&#123;</span><br><span class="line">                    int t=a[i];</span><br><span class="line">                    a[i]=a[i-1];</span><br><span class="line">                    a[i-1]=t;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //求最小的k个数</span><br><span class="line">    //数组a中从a[p]到a[r]的元素按照x划分</span><br><span class="line">    public static int partitionModify(int p,int r,int x)&#123;</span><br><span class="line">        int i,j;</span><br><span class="line">        for(i=p,j=r;i&lt;j;i++)&#123;</span><br><span class="line">            if(a[i]&gt;=x)&#123;</span><br><span class="line">                while (i&lt;j&amp;&amp;a[j]&gt;=x)&#123;</span><br><span class="line">                    j--;</span><br><span class="line">                &#125;</span><br><span class="line">                if(i!=j)&#123;</span><br><span class="line">                    int t=a[i];</span><br><span class="line">                    a[i]=a[j];</span><br><span class="line">                    a[j]=t;</span><br><span class="line">                    j--;</span><br><span class="line">                &#125;else &#123;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if(a[i]&gt;=x&amp;&amp;i&gt;p)&#123;</span><br><span class="line">            return i-1;</span><br><span class="line">        &#125;</span><br><span class="line">        return i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //将r-p+1个元素按5个元素分为一组，分别找出各组的中位数</span><br><span class="line">    //再通过迭代求出中位数的中位数</span><br><span class="line">    public static int selectModify(int p,int r,int k)&#123;</span><br><span class="line">        int i;</span><br><span class="line">        if(r-p+1&lt;=5)&#123;</span><br><span class="line">            sort(p,r);</span><br><span class="line">            return a[p+k-1];</span><br><span class="line">        &#125;</span><br><span class="line">        //找出中位数</span><br><span class="line">        for(i=0;i&lt;(r-p+1)/5;i++)&#123;</span><br><span class="line">            int s=p+5*i,t=s+4;//获得所划分的组中头元素和尾元素的下标</span><br><span class="line">            sort(s,t);//组内排序</span><br><span class="line">            int temp=a[p+i];//将中位数放在组内首元素位置</span><br><span class="line">            a[p+i]=a[s+2];</span><br><span class="line">            a[s+2]=temp;</span><br><span class="line">        &#125;</span><br><span class="line">        int x=selectModify(p,p+(r-p+1)/5-1,(r-p+6)/10);</span><br><span class="line">        i=partitionModify(p,r,x);</span><br><span class="line">        int j=i-p+1;</span><br><span class="line">        if (k &lt;= j) &#123;</span><br><span class="line">            return selectModify(p, i, k);</span><br><span class="line">        &#125;</span><br><span class="line">        else &#123;</span><br><span class="line">            return selectModify(i + 1, r, k - j);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Random random=new Random();</span><br><span class="line">        System.out.println(&quot;100个0~999之间的随机数&quot;);</span><br><span class="line">        for (int i=0;i&lt;100;i++)&#123;</span><br><span class="line">           a[i]=random.nextInt(1000);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(selectModify(0,99,10));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/11/17/TopK问题/"></a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">张睿</a></p>
+        <p><span>发布时间:</span>2018-11-17, 18:27:01</p>
+        <p><span>最后更新:</span>2018-11-17, 18:33:01</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/11/17/TopK问题/" title="">http://yoursite.com/2018/11/17/TopK问题/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2018/11/17/TopK问题/　　作者: 张睿" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/09/07/初入SpringMVC遇到的坑/">
+                    SpringMVC遇到的坑
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Top-K问题"><span class="toc-number">1.</span> <span class="toc-text">Top K问题</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/11/17/TopK问题/" data-title="" data-url="http://yoursite.com/2018/11/17/TopK问题/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"spicy"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+            // Add comment count
+            $(function(){ 
+                var jsonUrl = "http://api.duoshuo.com/threads/counts.jsonp?short_name=spicy&threads=2018/11/17/TopK问题/&callback=?";
+                $.getJSON(jsonUrl, function(result){
+                    $.each(result.response, function(i, field){
+                        var value = field.comments;
+                        if (value > 0) {
+                            $(".count-comment").text(value);
+                            return;
+                        }
+                    })
+                })
+            })
+        
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/09/07/初入SpringMVC遇到的坑/" title="下一篇: SpringMVC遇到的坑">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/11/17/TopK问题/">TopK问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/07/初入SpringMVC遇到的坑/">SpringMVC遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/20/数据库/">数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/12/MapReduce/">MapReduce</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/11/Hive介绍与基本操作/">Hive介绍与基本操作</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/unix哲学/">unix 哲学</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase组件/">Hbase组件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase存储结构/">Hbase存储结构</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase基础介绍/">Hbase介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs/">hdfs</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 张睿
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

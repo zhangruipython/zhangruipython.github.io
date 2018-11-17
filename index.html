@@ -260,6 +260,87 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-TopK问题" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/11/17/TopK问题/" class="article-date">
+      <time datetime="2018-11-17T10:27:01.270Z" itemprop="datePublished">2018-11-17</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="Top-K问题"><a href="#Top-K问题" class="headerlink" title="Top K问题"></a>Top K问题</h2><p>1、在一组非常大量的数据中找出前100大的数据</p>
+<p>（1）每次选出101个数进行排序，最后一个数删除，多次排序（垃圾算法，时间复杂度高）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">package com.zhangrui.sort;</span><br><span class="line"></span><br><span class="line">import java.util.Arrays;</span><br><span class="line">import java.util.Random;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @author 张睿</span><br><span class="line"> * @date 2018/11/17 9:24</span><br><span class="line"> */</span><br><span class="line">public class Top100 &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        long[] arr=new long[101];</span><br><span class="line">        Random r=new Random();</span><br><span class="line">        for(int i=0;i&lt;100000;i++)&#123;</span><br><span class="line">            arr[0]=r.nextLong();</span><br><span class="line">            Arrays.sort(arr);</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i=1;i&lt;arr.length;i++)&#123;</span><br><span class="line">            long l=arr[i];</span><br><span class="line">            System.out.println(l);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（2）大顶堆，优先队列 PriorityQueue，建立一个大小为K的队列（可以直接使用java中的优先队列 PriorityQueue，基于    优先级堆的极大优先级队列，队列中元素默认按照自然顺序排序，数字就是默认最小的放在队列头）如果队列中有空位可以直接添加元素，如有元素个数达到K，将要添加的元素与优先队列中的队首（也就是优先队列中最小的数）进行比较，选出最小的元素放在队列头</p>
+<ul>
+<li><p>时间复杂度为O(nlogk)</p>
+</li>
+<li><p>队列中方法说明：</p>
+<p><strong>offer()</strong>方法往队列添加元素如果队列已满直接返回false,队列未满则直接插入并返回true</p>
+<p><strong>add()</strong>方法是对offer()方法的简单封装.如果队列已满,抛出异常new IllegalStateException(“Queue full”);</p>
+<p> <strong>put()</strong>方法往队列里插入元素,如果队列已经满,则会一直等待直到队列为空插入新元素,或者线程被中断抛出异常       <strong>remove()</strong>方法直接删除队头的元素:</p>
+<p><strong>peek()</strong>方法直接取出队头的元素,并不删除.</p>
+<p><strong>element()</strong>方法对peek方法进行简单封装,如果队头元素存在则取出并不删除,如果不存在抛出异常NoSuchElementException()</p>
+<p>  <strong>poll()</strong>方法取出并删除队头的元素,当队列为空,返回null</p>
+<p>​     <strong>take()</strong>方法取出并删除队头的元素,当队列为空,则会一直等待直到队列有新元素可以取出,或者线程被中断抛出异常</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">package com.zhangrui.sort;</span><br><span class="line"></span><br><span class="line">import java.util.*;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @author 张睿</span><br><span class="line"> * @date 2018/11/17 11:30</span><br><span class="line"> * 使用固定容量的优先队列实现TopK问题</span><br><span class="line"> */</span><br><span class="line">public class Top100Test02 &#123;</span><br><span class="line">    private PriorityQueue&lt;Integer&gt; queue;</span><br><span class="line">    private int k;//最大容量</span><br><span class="line">    public Top100Test02(int maxSize)&#123;</span><br><span class="line">        if (maxSize&lt;0)&#123;</span><br><span class="line">            throw new IllegalArgumentException();</span><br><span class="line">        &#125;</span><br><span class="line">        this.k=maxSize;</span><br><span class="line">        this.queue=new PriorityQueue&lt;&gt;(maxSize);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void addElement(Integer e)&#123;</span><br><span class="line">        if (queue.size()&lt;k)&#123;</span><br><span class="line">            queue.add(e);</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            Integer peek=queue.peek();//取得堆中最小元素</span><br><span class="line">            if(e&lt;peek)&#123;</span><br><span class="line">                queue.poll();</span><br><span class="line">                queue.add(e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        final Top100Test02 TopQueue=new Top100Test02(10);//返回前十位</span><br><span class="line">        Random random=new Random();</span><br><span class="line">        int rNum=0;</span><br><span class="line">        System.out.println(&quot;100个0~999之间的随机数&quot;);</span><br><span class="line">        for (int i=1;i&lt;=100;i++)&#123;</span><br><span class="line">            rNum=random.nextInt(1000);</span><br><span class="line">            TopQueue.addElement(rNum);</span><br><span class="line">        &#125;</span><br><span class="line">        while (!TopQueue.queue.isEmpty())&#123;</span><br><span class="line">            System.out.println(TopQueue.queue.poll());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（2）针对Top K最有效的算法是BFPRT算法（中位数的中位数算法）</p>
+<ul>
+<li><p>将n个元素每5个分为一组，分为n/5组，最后一组元素为n%5，有效组为n/5.</p>
+</li>
+<li><p>取出每一组的中位数，最后一个组的不用计算中位数，任意排序方法</p>
+</li>
+<li><p>将各组的中位数与数组开头的数据在组的顺序依次交换，这样每组的中位数就排在了每组数据的最左边</p>
+</li>
+<li><p>‘递归调用中位数选择算法查找出所有中位数的中位数，设为X，偶数个中位数的情况下设定为选取中间小的一个</p>
+</li>
+<li><p>按照X大小划分，大于或等于X的在X右边，小于X放在X左边</p>
+</li>
+<li><p>得到X元素的下标i，i左边的元素都小于X，i右边的元素都大于或等于X</p>
+<p>若i==k，返回X</p>
+<p>若i&lt;k，在小于X元素中递归查找第i小的元素</p>
+<p>若i&gt;k，在大于等于X元素中递归查找第i-k小的元素</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">package com.zhangrui.sort;</span><br><span class="line"></span><br><span class="line">import java.util.Random;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @author 张睿</span><br><span class="line"> * @date 2018/11/17 15:58</span><br><span class="line"> * BFPRT算法</span><br><span class="line"> */</span><br><span class="line">public class Top100Test03 &#123;</span><br><span class="line">    private static int[] a=null;</span><br><span class="line">    //冒泡排序</span><br><span class="line">    public static void sort(int first,int end)&#123;</span><br><span class="line">        for(int flag=first;flag&lt;end;flag++)&#123;</span><br><span class="line">            for(int i=end;i&gt;flag;i--)&#123;</span><br><span class="line">                if(a[i]&lt;a[i-1])&#123;</span><br><span class="line">                    int t=a[i];</span><br><span class="line">                    a[i]=a[i-1];</span><br><span class="line">                    a[i-1]=t;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //求最小的k个数</span><br><span class="line">    //数组a中从a[p]到a[r]的元素按照x划分</span><br><span class="line">    public static int partitionModify(int p,int r,int x)&#123;</span><br><span class="line">        int i,j;</span><br><span class="line">        for(i=p,j=r;i&lt;j;i++)&#123;</span><br><span class="line">            if(a[i]&gt;=x)&#123;</span><br><span class="line">                while (i&lt;j&amp;&amp;a[j]&gt;=x)&#123;</span><br><span class="line">                    j--;</span><br><span class="line">                &#125;</span><br><span class="line">                if(i!=j)&#123;</span><br><span class="line">                    int t=a[i];</span><br><span class="line">                    a[i]=a[j];</span><br><span class="line">                    a[j]=t;</span><br><span class="line">                    j--;</span><br><span class="line">                &#125;else &#123;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if(a[i]&gt;=x&amp;&amp;i&gt;p)&#123;</span><br><span class="line">            return i-1;</span><br><span class="line">        &#125;</span><br><span class="line">        return i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //将r-p+1个元素按5个元素分为一组，分别找出各组的中位数</span><br><span class="line">    //再通过迭代求出中位数的中位数</span><br><span class="line">    public static int selectModify(int p,int r,int k)&#123;</span><br><span class="line">        int i;</span><br><span class="line">        if(r-p+1&lt;=5)&#123;</span><br><span class="line">            sort(p,r);</span><br><span class="line">            return a[p+k-1];</span><br><span class="line">        &#125;</span><br><span class="line">        //找出中位数</span><br><span class="line">        for(i=0;i&lt;(r-p+1)/5;i++)&#123;</span><br><span class="line">            int s=p+5*i,t=s+4;//获得所划分的组中头元素和尾元素的下标</span><br><span class="line">            sort(s,t);//组内排序</span><br><span class="line">            int temp=a[p+i];//将中位数放在组内首元素位置</span><br><span class="line">            a[p+i]=a[s+2];</span><br><span class="line">            a[s+2]=temp;</span><br><span class="line">        &#125;</span><br><span class="line">        int x=selectModify(p,p+(r-p+1)/5-1,(r-p+6)/10);</span><br><span class="line">        i=partitionModify(p,r,x);</span><br><span class="line">        int j=i-p+1;</span><br><span class="line">        if (k &lt;= j) &#123;</span><br><span class="line">            return selectModify(p, i, k);</span><br><span class="line">        &#125;</span><br><span class="line">        else &#123;</span><br><span class="line">            return selectModify(i + 1, r, k - j);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Random random=new Random();</span><br><span class="line">        System.out.println(&quot;100个0~999之间的随机数&quot;);</span><br><span class="line">        for (int i=0;i&lt;100;i++)&#123;</span><br><span class="line">           a[i]=random.nextInt(1000);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(selectModify(0,99,10));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-初入SpringMVC遇到的坑" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
