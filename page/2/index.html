@@ -14,18 +14,17 @@
 <meta name="author" content="张睿" />
 
 
+    
+    
 
-<meta name="description" content="关于我 所有杀不死我们的人或者事，都会使我们更加强大 email: 3279164326@qq.com">
+
 <meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="http://yoursite.com/about/index.html">
+<meta property="og:title" content="Myblogs">
+<meta property="og:url" content="http://yoursite.com/page/2/index.html">
 <meta property="og:site_name" content="Myblogs">
-<meta property="og:description" content="关于我 所有杀不死我们的人或者事，都会使我们更加强大 email: 3279164326@qq.com">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-11T04:38:55.846Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about">
-<meta name="twitter:description" content="关于我 所有杀不死我们的人或者事，都会使我们更加强大 email: 3279164326@qq.com">
+<meta name="twitter:title" content="Myblogs">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -53,11 +52,13 @@
 <link rel="stylesheet" href="/css/style.css">
 
 
+    <style> .article { opacity: 0;} </style>
+
 
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>about | Myblogs</title>
+<title>Myblogs</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -66,7 +67,7 @@
     var yiliaConfig = {
         fancybox: true,
         animate: true,
-        isHome: false,
+        isHome: true,
         isPost: false,
         isArchive: false,
         isTag: false,
@@ -257,11 +258,13 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="page-" class="article article-type-page" itemscope itemprop="blogPost">
+      <div class="body-wrap">
+  
+    <article id="post-hdfs" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/about/index.html" class="article-date">
-      <time datetime="2018-04-02T02:02:45.000Z" itemprop="datePublished">2018-04-02</time>
+      <a href="/2018/04/02/hdfs/" class="article-date">
+      <time datetime="2018-04-02T03:08:58.000Z" itemprop="datePublished">2018-04-02</time>
 </a>
 
 
@@ -275,151 +278,73 @@
       <header class="article-header">
         
   
-    <h1 class="article-title" itemprop="name">
-      about
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/02/hdfs/">hdfs</a>
     </h1>
   
 
       </header>
       
-      <div class="article-info article-info-post">
-        
-
-        
-        <div class="clearfix"></div>
-      </div>
-      
     
     <div class="article-entry" itemprop="articleBody">
       
           
-              <style>
-    .article-meta { display: none; }
-    #container .article .article-title { padding-right: 0; }
-    .article-header {
-        padding: 0;
-        padding-top: 26px;
-        border-left: none;
-        text-align: center;
-    }
-    .article-header:hover { border-left: none; }
-    .article-title { font-size: 1.6em }
-    .article-entry hr { margin: 0;}
-    .article-meta,
-    #container .article-info-post.article-info { display: none;}
-    #container .article .article-title { padding: 0; }
-</style>
-
-
-          
-        <h2 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h2><p> 所有杀不死我们的人或者事，都会使我们更加强大</p>
-<p>email: <a href="mailto:3279164326@qq.com" target="_blank" rel="noopener">3279164326@qq.com</a></p>
+        <h1 id="Hadoop分布式文件系统"><a href="#Hadoop分布式文件系统" class="headerlink" title="Hadoop分布式文件系统"></a>Hadoop分布式文件系统</h1><h2 id="一个文件被分布在多个机器上存储"><a href="#一个文件被分布在多个机器上存储" class="headerlink" title="一个文件被分布在多个机器上存储"></a>一个文件被分布在多个机器上存储</h2><h2 id="高容错性的系统"><a href="#高容错性的系统" class="headerlink" title="高容错性的系统"></a>高容错性的系统</h2><h2 id="高吞吐量的数据访问"><a href="#高吞吐量的数据访问" class="headerlink" title="高吞吐量的数据访问"></a>高吞吐量的数据访问</h2><h2 id="适合大规模数据集的使用"><a href="#适合大规模数据集的使用" class="headerlink" title="适合大规模数据集的使用"></a>适合大规模数据集的使用</h2><h2 id="HBase基于HDFS"><a href="#HBase基于HDFS" class="headerlink" title="HBase基于HDFS"></a>HBase基于HDFS</h2><blockquote>
+<p>每一个磁盘都有默认的数据块大小是磁盘进行读取的最小单位<br>一般为512字节。<br>Block：大文件会被分割为多个Block进行存储，Block默认大小为128M<br>每一个Block 会在DataNode上存储多个副本，默认值为3。<br>HDFS的块比磁盘的块大很多，其目的是为了最小化寻址开销。<br>128M-》512字节一个block </p>
+</blockquote>
+<h3 id="对分布式文件系统中的块进行抽象："><a href="#对分布式文件系统中的块进行抽象：" class="headerlink" title="对分布式文件系统中的块进行抽象："></a>对分布式文件系统中的块进行抽象：</h3><pre><code>更好应对大文件的存储
+简化了存储系统的设计
+适用于数据备份
+</code></pre><h3 id="主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责："><a href="#主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责：" class="headerlink" title="主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责："></a>主节点上的NameNode进程是HDFS文件系统的守护进程。该进程负责：</h3><pre><code>记录文件是如何分割成数据块，以及存储数据块的数据节点的信息
+对内存和I/O进行集中管理
+保存文件与block的对应关系/block与节点的对应关系
+</code></pre><blockquote>
+<p>每个集群都有一个SecondaryNameNode进程，负责监控HDFS状态的辅助后台进程<br>不接受或记录任何实时的数据变化<br>SecondaryNameNode进程会定期与NameNode通信每隔三秒发送心跳包，每隔一<br>个小时发送快报告（当前从节点数据块的实际信息），并定期保存HDFS元数据的快照<br>也可以用作备用的NameNode。</p>
+</blockquote>
+<h2 id="NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系"><a href="#NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系" class="headerlink" title="NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系"></a>NameNode进程运行在主节点上，负责管理文件、文件目录和Block的对应关系，以及Block和DataNode的映射关系</h2><h3 id="主要使用以下文件"><a href="#主要使用以下文件" class="headerlink" title="主要使用以下文件"></a>主要使用以下文件</h3><p>   <strong> Fsimage :保存文件系统的映射信息</strong></p>
+<p>   <strong> Edits：用来临时性记录数据改变的情况的文件（上个检查点后用户对于元数据的修改操作）</strong></p>
+<h2 id="checkpoint机制（secondaryNameNode负责）-用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点"><a href="#checkpoint机制（secondaryNameNode负责）-用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点" class="headerlink" title="checkpoint机制（secondaryNameNode负责） 用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点"></a>checkpoint机制（secondaryNameNode负责） 用于在适合的时机将edits文件内容合并到fsimage这种时机被称为检查点</h2><p><strong>    CheckPoint启动时，NameNode创建一个新文件来接受</strong></p>
+<p><strong>    日志文件系统的变化，该文件名为edits.new</strong></p>
+<p><strong>    文件edits不再接受变化新的变化时，和fsimage一起拷贝到CheckPointNode所在文件系统中</strong></p>
+<p><strong> CheckPointNode将两个文件合并成产生fsimage.ckpt文件</strong></p>
+<p><strong> CheckPointNode将fsimage.ckpt拷贝到NameNode上</strong></p>
+<p><strong> NameNode使用新的fsimage.ckt替代原fsimage文件</strong> </p>
+<p><strong> NameNode用edits.new替代edits</strong></p>
 
       
     </div>
     
-  </div>
-  
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hdfs/">hdfs</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
     
-
-
+  </div>
   
 </article>
 
 
 
-    
-<div class="share">
-    
-        <div class="bdsharebuttonbox">
-            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
-            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
-            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
-            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
-            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
-            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
-        </div>
-        <script>
-            window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"about　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
-        </script>
-    
-
-    
-</div>
 
 
 
 
 
 
-
-    
-      <div class="duoshuo" id="comments">
-    <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="about/index.html" data-title="about" data-url="http://yoursite.com/about/index.html"></div>
-    <script>
-        var duoshuoQuery = {short_name:"spicy"};
-        var loadComment = function(){
-            var d = document, s = d.createElement('script');
-            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-            s.async = true; s.charset = 'UTF-8';
-            (d.head || d.body).appendChild(s);
-        }
-
-        
-            // Add comment count
-            $(function(){ 
-                var jsonUrl = "http://api.duoshuo.com/threads/counts.jsonp?short_name=spicy&threads=about/index.html&callback=?";
-                $.getJSON(jsonUrl, function(result){
-                    $.each(result.response, function(i, field){
-                        var value = field.comments;
-                        if (value > 0) {
-                            $(".count-comment").text(value);
-                            return;
-                        }
-                    })
-                })
-            })
-        
-    </script>
-    
-    <aside class="comment-bar">
-        <a href="javascript:void(0);">
-            <i class="fa fa-commenting-o animated infinite pulse"></i>
-            <i class="fa fa-spinner fa-pulse"></i>
-            <span class="count-comment"></span>
-        </a>
-    </aside>
-    <script>
-        var $commentBar = $("#comments aside.comment-bar");
-        var load$hide = function(){
-            $commentBar.find("a > i").toggle();
-            loadComment();
-            $commentBar.fadeOut(800);
-        }
-        $commentBar.click(function(){
-            load$hide();
-        })
-        $commentBar.children("a").hover(function(){
-            load$hide();
-        })
-        if (window.location.hash === "#comments") {
-            load$hide();
-        }
-    </script>
-
-</div>
-    
-
-
-
-
-
-    <script>
-        
-    </script>
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    </nav>
+  
 </div>
       <footer id="footer">
     <div class="outer">
