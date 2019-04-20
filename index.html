@@ -260,6 +260,71 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-spark udf函数" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/04/20/spark udf函数/" class="article-date">
+      <time datetime="2019-04-20T05:38:37.081Z" itemprop="datePublished">2019-04-20</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <hr>
+<p>title: spark udf<br>date: 2019-4-20 13:42</p>
+<h2 id="tags-spark"><a href="#tags-spark" class="headerlink" title="tags: [spark]"></a>tags: [spark]</h2><h2 id="pyspark-udf自定义函数"><a href="#pyspark-udf自定义函数" class="headerlink" title="pyspark udf自定义函数"></a>pyspark udf自定义函数</h2><h3 id="spark-udf的定义："><a href="#spark-udf的定义：" class="headerlink" title="spark udf的定义："></a>spark udf的定义：</h3><h4 id="UDF-User-defined-functions-UDFs-即用户自定义函数，在Spark-Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。"><a href="#UDF-User-defined-functions-UDFs-即用户自定义函数，在Spark-Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。" class="headerlink" title="UDF(User-defined functions, UDFs),即用户自定义函数，在Spark Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。"></a>UDF(User-defined functions, UDFs),即用户自定义函数，在Spark Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。</h4><h3 id="实际应用："><a href="#实际应用：" class="headerlink" title="实际应用："></a>实际应用：</h3><ul>
+<li>定义一个函数</li>
+</ul>
+<p>这是一个普通的判断函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_bad_point</span><span class="params">(grid01_order_index, grid02_order_index, grid01_hash, grid02_hash)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> grid01_order_index &lt; grid02_order_index:</span><br><span class="line">        <span class="keyword">return</span> grid02_hash</span><br><span class="line">    <span class="keyword">elif</span> grid02_order_index &lt; grid01_order_index:</span><br><span class="line">        <span class="keyword">return</span> grid01_hash</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将函数注册为spark udf</li>
+</ul>
+<p>这里需要表明方法的返回值类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_bad_udf = udf(get_bad_point, StringType())</span><br></pre></td></tr></table></figure>
+<ul>
+<li>结合spark SQL自带方法使用</li>
+</ul>
+<p>向udf函数传入spark dataframe中列名作为参数</p>
+<p>alias为udf返回的结果生成别名</p>
+<p>distinct()是对dataframe中数据进行去重</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">unmatched_point_df = unmatched_distance_point.select(</span><br><span class="line">       get_bad_udf(<span class="string">"grid01_order_index"</span>, <span class="string">"grid02_order_index"</span>, <span class="string">"grid01_hash"</span>,</span><br><span class="line">                   <span class="string">"grid02_hash"</span>).alias(<span class="string">"bad_point_hash"</span>)).distinct()</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>pyspark的使用可以大大降低编写spark查询的代码量，结合udf函数的使用使我们操作spark SQL时不需要写大量的SQL脚本，由于spark SQL为我们封装了许多的操作函数，比如：过滤filter，两个dataframe之间取差集exceptAll  等等</p>
+<p>所以我们编写spark 程序代码量不应该很多，如果代码量很多出现了大量的for循环，if判断等那么我们的代码就需要优化，原因就是所有的SQL都是循环+判断，所以可以用spark SQL就用spark SQL，最好不要手写循环判断。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-计算一点和周围距离最近的前100点位置" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -875,81 +940,6 @@
         <h1 id="Hbase存储结构"><a href="#Hbase存储结构" class="headerlink" title="Hbase存储结构"></a>Hbase存储结构</h1><h3 id="Hbase和关系型数据库的区别"><a href="#Hbase和关系型数据库的区别" class="headerlink" title="Hbase和关系型数据库的区别"></a>Hbase和关系型数据库的区别</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">关系型数据库按行存储（.csv文件）</span><br><span class="line">HBase的存储结构基于HDFS</span><br></pre></td></tr></table></figure>
 <h3 id="Region"><a href="#Region" class="headerlink" title="Region"></a>Region</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1、每个Region对应一个HRegion实例，这些实例被HRegionServer管理</span><br><span class="line">一个表的所有Region会分布在不同的region服务器上被管理，但一个Region</span><br><span class="line">内的数据只会被一个服务器所管理。</span><br><span class="line">2、物理上数据存储在HDFS上，由Region服务器提供数据服务。</span><br><span class="line">每个Region由一个或多个Store组成，每个Store保存一个列族的所有数据。</span><br><span class="line">3、Store是Hbase存储的核心，每个Store由一个MemStore和零至多个StoreFile组成，StoreFile以HFile的格式存储在HDFS上。`</span><br></pre></td></tr></table></figure>
 <h2 id="store"><a href="#store" class="headerlink" title="store"></a>store</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1、store按列族划分</span><br><span class="line">2、StoreFile:按列划分</span><br><span class="line">3、HFile：实际存入hdfs的文件，同一列的数据会被存在同一节点</span><br><span class="line">4、HLog用于灾难备份，使用了预写式日志（WAL）</span><br><span class="line">5、每个Region服务器对应一个Hlog，所以来自不同表的region日志是混在一起的，这样做的目的是写入日志时只需要追加单个文件即可。</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Hbase基础介绍" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2018/04/09/Hbase基础介绍/" class="article-date">
-      <time datetime="2018-04-09T03:16:17.000Z" itemprop="datePublished">2018-04-09</time>
-</a>
-
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/09/Hbase基础介绍/">Hbase介绍</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <p>介绍一下Hbase,为什么使用Hbase,Hbase的运行机制</p>
-<h2 id="QuickStart"><a href="#QuickStart" class="headerlink" title="QuickStart"></a>QuickStart</h2><h3 id="Big-Table-分布式数据存储系统"><a href="#Big-Table-分布式数据存储系统" class="headerlink" title="Big Table:分布式数据存储系统"></a>Big Table:分布式数据存储系统</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hbase:Big Table 的Java实现（非关系型数据库）</span><br></pre></td></tr></table></figure>
-<h3 id="主要特点："><a href="#主要特点：" class="headerlink" title="主要特点："></a>主要特点：</h3><pre><code>大：一个表可以包含上亿行，上百万列
-面向列：面向列的存储和权限控制，列的独立检索
-稀疏：对于为空的列，不占用存储空间
-针对每个CELL的值保存多个版本由时间戳来标识    
-每个表由行和列组成
-每行由‘行键’来唯一标识，默认存在
-每个列属于一个特定的列族（Column Family）
-表中由行和列确定的存储单元称为一个单元（Cell）
-每个单元保存了同一份数据的多个版本，由时间戳（TimeStamp）来标识
-</code></pre><h3 id="副本的控制："><a href="#副本的控制：" class="headerlink" title="副本的控制："></a>副本的控制：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">副本的保存策略可以在建表时动态指定，默认只保存一个副本</span><br></pre></td></tr></table></figure>
-<pre><code>(1) 按时间控制：可以设定保存的副本的时间长度，超过该时间的部分将被删除
-(2)按最大副本数量来控制，比如说每个CULL就保存七个副本，当存入第八个副本时，第一个存入的副本将会被删除
-</code></pre><h3 id="Column-Hbase提供的一个列族的概念"><a href="#Column-Hbase提供的一个列族的概念" class="headerlink" title="Column(Hbase提供的一个列族的概念)"></a>Column(Hbase提供的一个列族的概念)</h3><pre><code>Family，当创建一个表格时，仅需要指定所有的列族，并不需要指定具体的列
-</code></pre><p>Hbase的数据存储是以行为单位的，若干行的数据被划分一个region，该region内按列族划分为Store，一个Store内部按列（Qualifier限定符）划分为多个StoreFile，StoreFile物理上对应HFile文件，HBase存储时，是以HFile为单位进行分布存储的，因此同一列的数据会被优先保存在同一个节点上<br>    这样的设计有利于数据分析。</p>
 
       
     </div>
