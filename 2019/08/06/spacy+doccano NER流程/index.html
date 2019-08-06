@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="张睿" />
+
+
+
+<meta name="description" content="spacy+doccano 中文NLP流程使用工具介绍spacy是一个工业级python自然语言处理包，支持自然语言文本分析、命名实体识别、词性标注、依存句法分析等功能。spacy2.0之后通过引入结巴分词，添加了对中文NLP的支持，不过在使用spacy进行中文自然语言处理时有许多需要注意的地方。 doccano是一个在GitHub上开源的可视化实体标注工具，支持自定义实体标签，文本实体标注，导出">
+<meta name="keywords" content="NLP,自然语言">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spacy+doccano 中文NLP流程">
+<meta property="og:url" content="http://yoursite.com/2019/08/06/spacy+doccano NER流程/index.html">
+<meta property="og:site_name" content="Myblogs">
+<meta property="og:description" content="spacy+doccano 中文NLP流程使用工具介绍spacy是一个工业级python自然语言处理包，支持自然语言文本分析、命名实体识别、词性标注、依存句法分析等功能。spacy2.0之后通过引入结巴分词，添加了对中文NLP的支持，不过在使用spacy进行中文自然语言处理时有许多需要注意的地方。 doccano是一个在GitHub上开源的可视化实体标注工具，支持自定义实体标签，文本实体标注，导出">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-06T14:56:42.753Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spacy+doccano 中文NLP流程">
+<meta name="twitter:description" content="spacy+doccano 中文NLP流程使用工具介绍spacy是一个工业级python自然语言处理包，支持自然语言文本分析、命名实体识别、词性标注、依存句法分析等功能。spacy2.0之后通过引入结巴分词，添加了对中文NLP的支持，不过在使用spacy进行中文自然语言处理时有许多需要注意的地方。 doccano是一个在GitHub上开源的可视化实体标注工具，支持自定义实体标签，文本实体标注，导出">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Myblogs" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/img/TiddlyWiki.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>spacy+doccano 中文NLP流程 | Myblogs</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: false
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/a.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">张睿</a></h1>
+        </hgroup>
+
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:3279164326@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://www.github.com" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" href="http://www.zhihu.com" title="知乎"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/MapReduce/">MapReduce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Neo4j/">Neo4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSM/">SSM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hadoop/">hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hdfs/">hdfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/philosophy/">philosophy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/postgresql/">postgresql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark-PostgreSQL-pyspark/">spark,PostgreSQL,pyspark</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自然语言/">自然语言</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">与恶龙缠斗过久,自身亦成为恶龙；当你凝视深渊,深渊将回以凝视</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">张睿</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/a.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">张睿</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:3279164326@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://www.github.com" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="http://www.zhihu.com" title="知乎"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-spacy+doccano NER流程" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/08/06/spacy+doccano NER流程/" class="article-date">
+      <time datetime="2019-08-06T14:56:55.000Z" itemprop="datePublished">2019-08-06</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      spacy+doccano 中文NLP流程
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/自然语言/">自然语言</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="spacy-doccano-中文NLP流程"><a href="#spacy-doccano-中文NLP流程" class="headerlink" title="spacy+doccano 中文NLP流程"></a>spacy+doccano 中文NLP流程</h2><h3 id="使用工具介绍"><a href="#使用工具介绍" class="headerlink" title="使用工具介绍"></a>使用工具介绍</h3><p>spacy是一个工业级python自然语言处理包，支持自然语言文本分析、命名实体识别、词性标注、依存句法分析等功能。spacy2.0之后通过引入结巴分词，添加了对中文NLP的支持，不过在使用spacy进行中文自然语言处理时有许多需要注意的地方。</p>
+<p>doccano是一个在GitHub上开源的可视化实体标注工具，支持自定义实体标签，文本实体标注，导出标注数据为jsonl（JSON Lines文件，结构化数据，用于管道文件传输）。在中文NPL处理中doccano主要作用是提供中文NER训练参数。</p>
+<hr>
+<h2 id="doccano使用过程"><a href="#doccano使用过程" class="headerlink" title="doccano使用过程"></a>doccano使用过程</h2><h3 id="在doccano上对语句进行命名实体标签标注"><a href="#在doccano上对语句进行命名实体标签标注" class="headerlink" title="在doccano上对语句进行命名实体标签标注"></a>在doccano上对语句进行命名实体标签标注</h3><ul>
+<li>自定义实体标签</li>
+<li>选择实体设定实体标签</li>
+</ul>
+<h3 id="将doccano上数据导出为json数据"><a href="#将doccano上数据导出为json数据" class="headerlink" title="将doccano上数据导出为json数据"></a>将doccano上数据导出为json数据</h3><ul>
+<li>export data为json格式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;id&quot;: 1, &quot;text&quot;: &quot;The Hitchhiker&apos;s Guide to the Galaxy (sometimes referred to as HG2G, HHGTTGor H2G2) is a comedy science fiction series created by Douglas Adams. Originally a radio comedy broadcast on BBC Radio 4 in 1978, it was later adapted to other formats, including stage shows, novels, comic books, a 1981 TV series, a 1984 video game, and 2005 feature film.&quot;, &quot;annotations&quot;: [], &quot;meta&quot;: &#123;&#125;, &quot;annotation_approver&quot;: null&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="解析json数据为TRAIN-DATA-数据格式"><a href="#解析json数据为TRAIN-DATA-数据格式" class="headerlink" title="解析json数据为TRAIN_DATA 数据格式"></a>解析json数据为TRAIN_DATA 数据格式</h3><ul>
+<li>解析json格式数据</li>
+<li>抽取数据中的labels</li>
+</ul>
+<h3 id="在现有模型中训练TRAIN-DATA，添加实体类别，更新模型"><a href="#在现有模型中训练TRAIN-DATA，添加实体类别，更新模型" class="headerlink" title="在现有模型中训练TRAIN_DATA，添加实体类别，更新模型"></a>在现有模型中训练TRAIN_DATA，添加实体类别，更新模型</h3><ul>
+<li>在模型中添加实体label</li>
+<li>循环训练model</li>
+</ul>
+<h3 id="对模型测试，查看模型训练效果，对于当前模型未能准确识别的实体，在doccano上更新标注"><a href="#对模型测试，查看模型训练效果，对于当前模型未能准确识别的实体，在doccano上更新标注" class="headerlink" title="对模型测试，查看模型训练效果，对于当前模型未能准确识别的实体，在doccano上更新标注"></a>对模型测试，查看模型训练效果，对于当前模型未能准确识别的实体，在doccano上更新标注</h3><ul>
+<li>与训练语句相同句法语句使用模型划分出实体label和实体名称</li>
+<li>对照找出当前模型划分错误之处</li>
+<li>在doccano调整训练语句</li>
+</ul>
+<h2 id="spacy的使用及安装过程"><a href="#spacy的使用及安装过程" class="headerlink" title="spacy的使用及安装过程"></a>spacy的使用及安装过程</h2><h3 id="spacy在centos7环境下的安装"><a href="#spacy在centos7环境下的安装" class="headerlink" title="spacy在centos7环境下的安装"></a>spacy在centos7环境下的安装</h3><p>在使用pip安装spacy时，因为面对的是中文环境，spacy2.0以后通过引入jieba分词添加了对中文的支持，但是还是有较多的坑。</p>
+<p>如果要使用中文模型，目前的安装环境是python3.6+spacy2.0.1，如果安装了最高版本的spacy2.1，在使用中文模型时会出现python re正则包出错的情况。</p>
+<p>中文模型的下载地址：<a href="https://github.com/howl-anderson/Chinese_models_for_SpaCy/releases" target="_blank" rel="noopener">https://github.com/howl-anderson/Chinese_models_for_SpaCy/releases</a> </p>
+<ul>
+<li>在使用中文模型时需要控制 msgpack-numpy==0.4.4.2  不然会出现 (TypeError:encoding)编码的错误</li>
+</ul>
+<p>安装好spacy和下载好中文模型之后，就是在spacy中配置中文环境，如何配置中文环境参考<a href="https://www.jianshu.com/p/0dab70cb540e" target="_blank" rel="noopener">https://www.jianshu.com/p/0dab70cb540e</a> </p>
+<p>配置好中文环境后，由于spacy使用的jieba分词模式是最普通的模式，遇到行业内专业词汇很难准确分词，这就需要我们使用jieba的自定义词典分词功能。</p>
+<ul>
+<li>使用自定义分词字典</li>
+</ul>
+<p>先自定义一个TXT文档，用于标注自定义词块、词性、词频</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">拿铁 3 i</span><br><span class="line">摩卡 3 i</span><br><span class="line">全自动咖啡机 3 i</span><br><span class="line">半自动咖啡机 3 i</span><br><span class="line">美式（传统滴滤式）咖啡机 100 i</span><br><span class="line">意式咖啡机 19 i</span><br><span class="line">胶囊咖啡机 3 i</span><br><span class="line">月房租 4 i</span><br><span class="line">卡布奇洛 4 i</span><br></pre></td></tr></table></figure>
+<p>代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">import jieba</span><br><span class="line">import jieba.posseg as pseg</span><br><span class="line">import jieba.analyse as anls</span><br><span class="line"></span><br><span class="line">doc = &quot;&quot;&quot;我在江北新区研创园喝咖啡，喝的是卡布奇洛&quot;&quot;&quot;</span><br><span class="line">doc01 = &quot;&quot;&quot;有一台全自动咖啡机出现故障了&quot;&quot;&quot;</span><br><span class="line">doc02 = &quot;&quot;&quot;江北新区研创园的月房租是10000人民币&quot;&quot;&quot;</span><br><span class="line">jieba.load_userdict(&quot;demo.txt&quot;)</span><br><span class="line"></span><br><span class="line"># 全模式</span><br><span class="line">seg_list = jieba.cut(doc)</span><br><span class="line">seg_list01 = jieba.cut(doc01)</span><br><span class="line">seg_list02 = jieba.cut(doc02)</span><br><span class="line">print(type(seg_list))</span><br><span class="line">print(&quot;/&quot;.join(seg_list))</span><br><span class="line">print(&quot;/&quot;.join(seg_list01))</span><br><span class="line">print(&quot;/&quot;.join(seg_list02))</span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">我/在/江北/新区/研创园/喝咖啡/，/喝/的/是/卡布奇洛</span><br><span class="line">有/一台/全自动咖啡机/出现/故障/了</span><br><span class="line">江北/新区/研创园/的/月房租/是/10000/人民币</span><br></pre></td></tr></table></figure>
+<ul>
+<li>因为当前目标是在文档中找出指定实体类型的实体，如找出实体类型为”法定代表人”的所有实体，在spacy中现有的实体类型并不能满足需求，所以这里需要使用命名实体标注和NER（命名实体识别），自定义实体标注的工作由doccano完成，在获取到训练数据后，需要将其训练至spacy的中文模型中。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">训练一个新的命名实体识别</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> unicode_literals, print_function</span><br><span class="line"><span class="comment"># from nlp_app.spacy_demo.data_conversion import conversion</span></span><br><span class="line"><span class="keyword">import</span> plac</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path</span><br><span class="line"><span class="keyword">import</span> spacy</span><br><span class="line"><span class="keyword">from</span> spacy.util <span class="keyword">import</span> minibatch, compounding</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解析json数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">conversion</span><span class="params">(path)</span>:</span></span><br><span class="line">    doc = open(path, <span class="string">"r"</span>)</span><br><span class="line">    train_data = []</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># all_text = doc.read()</span></span><br><span class="line">        lines = doc.readlines()</span><br><span class="line">        <span class="keyword">if</span> len(lines) != <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">for</span> all_text <span class="keyword">in</span> lines:</span><br><span class="line">                print(type(json.loads(all_text)))</span><br><span class="line">                all_text = json.loads(all_text)</span><br><span class="line">                text_content = all_text[<span class="string">"text"</span>]</span><br><span class="line">                text_entities = all_text[<span class="string">"labels"</span>]</span><br><span class="line">                entity_list = []</span><br><span class="line">                <span class="keyword">for</span> entity <span class="keyword">in</span> text_entities:</span><br><span class="line">                    entity = tuple(entity)</span><br><span class="line">                    entity_list.append(entity)</span><br><span class="line">                data = (text_content, &#123;<span class="string">"entities"</span>: entity_list&#125;)</span><br><span class="line">        train_data.append(data)</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        doc.close()</span><br><span class="line">    <span class="keyword">return</span> train_data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">TRAIN_DATA = conversion(<span class="string">"/home/hadoop/Documents/train_data.json1"</span>)</span><br><span class="line"><span class="comment"># 获取TRAIN_DATA 中的label</span></span><br><span class="line">label_list = []</span><br><span class="line"><span class="keyword">for</span> data <span class="keyword">in</span> TRAIN_DATA:</span><br><span class="line">    <span class="keyword">if</span> len(data) == <span class="number">2</span>:</span><br><span class="line">        entities = data[<span class="number">1</span>][<span class="string">"entities"</span>]</span><br><span class="line">        <span class="keyword">for</span> entity <span class="keyword">in</span> entities:</span><br><span class="line">            label_list.append(entity[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@plac.annotations(</span></span><br><span class="line">    model=(<span class="string">"Model name. Defaults to blank 'en' model."</span>, <span class="string">"option"</span>, <span class="string">"m"</span>, str),</span><br><span class="line">    output_dir=(<span class="string">"Optional output directory"</span>, <span class="string">"option"</span>, <span class="string">"o"</span>, Path),</span><br><span class="line">    n_iter=(<span class="string">"Number of training iterations"</span>, <span class="string">"option"</span>, <span class="string">"n"</span>, int),</span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(model=<span class="string">"zh_core_2.0.3"</span>, output_dir=<span class="string">"/usr/local/lib/python3.6/dist-packages/spacy/data/zh_core_2.0.3"</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">         n_iter=<span class="number">100</span>)</span>:</span></span><br><span class="line">    random.seed(<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">if</span> model <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">        nlp = spacy.load(model)</span><br><span class="line">        print(<span class="string">"Loaded model '%s'"</span> % model)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        nlp = spacy.blank(<span class="string">"en"</span>)  <span class="comment"># 选择语言创建模型</span></span><br><span class="line">        print(<span class="string">"Created blank 'en' model"</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">"ner"</span> <span class="keyword">not</span> <span class="keyword">in</span> nlp.pipe_names:</span><br><span class="line">        ner = nlp.create_pipe(<span class="string">"ner"</span>)</span><br><span class="line">        nlp.add_pipe(ner)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        ner = nlp.get_pipe(<span class="string">"ner"</span>)</span><br><span class="line">    <span class="comment"># 命名实体识别添加标签</span></span><br><span class="line">    <span class="keyword">for</span> label <span class="keyword">in</span> label_list:</span><br><span class="line">        ner.add_label(label)</span><br><span class="line">   </span><br><span class="line">    move_names = list(ner.move_names)</span><br><span class="line">    other_pipes = [pipe <span class="keyword">for</span> pipe <span class="keyword">in</span> nlp.pipe_names <span class="keyword">if</span> pipe != <span class="string">"ner"</span>]</span><br><span class="line">    <span class="keyword">with</span> nlp.disable_pipes(*other_pipes):  <span class="comment"># 训练模型</span></span><br><span class="line">        sizes = compounding(<span class="number">1.0</span>, <span class="number">4.0</span>, <span class="number">1.001</span>)</span><br><span class="line">        <span class="keyword">for</span> itn <span class="keyword">in</span> range(n_iter):</span><br><span class="line">            random.shuffle(TRAIN_DATA)</span><br><span class="line">            batches = minibatch(TRAIN_DATA, size=sizes)</span><br><span class="line">            losses = &#123;&#125;  <span class="comment"># 训练损失</span></span><br><span class="line">            <span class="keyword">for</span> batch <span class="keyword">in</span> batches:</span><br><span class="line">                texts, annotations = zip(*batch)</span><br><span class="line">                nlp.update(texts, annotations, drop=<span class="number">0.35</span>, losses=losses)</span><br><span class="line">            print(<span class="string">"Losses"</span>, losses)</span><br><span class="line">    test_text = TRAIN_DATA[<span class="number">0</span>][<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># doc = nlp(test_text)</span></span><br><span class="line">    print(<span class="string">"Entities in '%s'"</span> % test_text)</span><br><span class="line">    <span class="comment"># for ent in doc.ents:</span></span><br><span class="line">    <span class="comment">#     print(ent.label_, ent.text)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 保存模型至路径</span></span><br><span class="line">    <span class="keyword">if</span> output_dir <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">        output_dir = Path(output_dir)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> output_dir.exists():</span><br><span class="line">            output_dir.mkdir()</span><br><span class="line">        <span class="comment"># nlp.meta["name"] = new_model_name</span></span><br><span class="line">        nlp.to_disk(output_dir)</span><br><span class="line">        print(<span class="string">"Saved model to"</span>, output_dir)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 测试模型效果</span></span><br><span class="line">        print(<span class="string">"Loading from"</span>, output_dir)</span><br><span class="line">        nlp2 = spacy.load(output_dir)</span><br><span class="line">        <span class="keyword">assert</span> nlp2.get_pipe(<span class="string">"ner"</span>).move_names == move_names</span><br><span class="line">        doc2 = nlp2(test_text)</span><br><span class="line">        <span class="keyword">for</span> ent <span class="keyword">in</span> doc2.ents:</span><br><span class="line">            print(ent.label_, ent.text)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    plac.call(main)</span><br></pre></td></tr></table></figure>
+<p>通过不断强化训练，将自定义实体与文本间句法关系写入中文模型中。在模型训练中有一个值得重视的问题就是深度学习的<strong>灾难性遗忘</strong>问题，而这个问题在中文模型中尤为明显，模型训练好之后，可以对与训练数据类似句法模板的文档进行命名实体识别，而且准确率较高，但是一旦在该模型基础上再一次训练数据，那么之前所训练的内容将被遗忘，也就是说所有模型训练都是一次性的，不可重复。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/08/06/spacy+doccano NER流程/">spacy+doccano 中文NLP流程</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">张睿</a></p>
+        <p><span>发布时间:</span>2019-08-06, 22:56:55</p>
+        <p><span>最后更新:</span>2019-08-06, 22:56:42</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/08/06/spacy+doccano NER流程/" title="spacy+doccano 中文NLP流程">http://yoursite.com/2019/08/06/spacy+doccano NER流程/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2019/08/06/spacy+doccano NER流程/　　作者: 张睿" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2019/04/30/Neo4j的认知与学习/">
+                    Neo4j的认知与学习
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#spacy-doccano-中文NLP流程"><span class="toc-number">1.</span> <span class="toc-text">spacy+doccano 中文NLP流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用工具介绍"><span class="toc-number">1.1.</span> <span class="toc-text">使用工具介绍</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#doccano使用过程"><span class="toc-number">2.</span> <span class="toc-text">doccano使用过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#在doccano上对语句进行命名实体标签标注"><span class="toc-number">2.1.</span> <span class="toc-text">在doccano上对语句进行命名实体标签标注</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#将doccano上数据导出为json数据"><span class="toc-number">2.2.</span> <span class="toc-text">将doccano上数据导出为json数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解析json数据为TRAIN-DATA-数据格式"><span class="toc-number">2.3.</span> <span class="toc-text">解析json数据为TRAIN_DATA 数据格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在现有模型中训练TRAIN-DATA，添加实体类别，更新模型"><span class="toc-number">2.4.</span> <span class="toc-text">在现有模型中训练TRAIN_DATA，添加实体类别，更新模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#对模型测试，查看模型训练效果，对于当前模型未能准确识别的实体，在doccano上更新标注"><span class="toc-number">2.5.</span> <span class="toc-text">对模型测试，查看模型训练效果，对于当前模型未能准确识别的实体，在doccano上更新标注</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#spacy的使用及安装过程"><span class="toc-number">3.</span> <span class="toc-text">spacy的使用及安装过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#spacy在centos7环境下的安装"><span class="toc-number">3.1.</span> <span class="toc-text">spacy在centos7环境下的安装</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"spacy+doccano 中文NLP流程　| Myblogs　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2019/08/06/spacy+doccano NER流程/" data-title="spacy+doccano 中文NLP流程" data-url="http://yoursite.com/2019/08/06/spacy+doccano NER流程/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"spicy"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+            // Add comment count
+            $(function(){ 
+                var jsonUrl = "http://api.duoshuo.com/threads/counts.jsonp?short_name=spicy&threads=2019/08/06/spacy+doccano NER流程/&callback=?";
+                $.getJSON(jsonUrl, function(result){
+                    $.each(result.response, function(i, field){
+                        var value = field.comments;
+                        if (value > 0) {
+                            $(".count-comment").text(value);
+                            return;
+                        }
+                    })
+                })
+            })
+        
+    </script>
+    
+    <aside class="comment-bar">
+        <a href="javascript:void(0);">
+            <i class="fa fa-commenting-o animated infinite pulse"></i>
+            <i class="fa fa-spinner fa-pulse"></i>
+            <span class="count-comment"></span>
+        </a>
+    </aside>
+    <script>
+        var $commentBar = $("#comments aside.comment-bar");
+        var load$hide = function(){
+            $commentBar.find("a > i").toggle();
+            loadComment();
+            $commentBar.fadeOut(800);
+        }
+        $commentBar.click(function(){
+            load$hide();
+        })
+        $commentBar.children("a").hover(function(){
+            load$hide();
+        })
+        if (window.location.hash === "#comments") {
+            load$hide();
+        }
+    </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2019/04/30/Neo4j的认知与学习/" title="下一篇: Neo4j的认知与学习">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/08/06/spacy+doccano NER流程/">spacy+doccano 中文NLP流程</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/30/Neo4j的认知与学习/">Neo4j的认知与学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/postgres+pyspark计算前100最短距离/">使用pyspark计算一点和周围距离最近的前100点位置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/pyspark-udf自定义函数/">pyspark udf自定义函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/24/计算一点和周围距离最近的前100点位置/">计算一点和周围距离最近的前100点位置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/17/TopK问题/">Top K问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/09/07/初入SpringMVC遇到的坑/">SpringMVC遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/20/数据库/">数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/12/MapReduce/">MapReduce</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/11/Hive介绍与基本操作/">Hive介绍与基本操作</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/unix哲学/">unix 哲学</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase组件/">Hbase组件</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase存储结构/">Hbase存储结构</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/09/Hbase基础介绍/">Hbase介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/02/hdfs/">hdfs</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018-2019 张睿
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
