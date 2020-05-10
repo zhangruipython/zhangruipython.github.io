@@ -260,6 +260,144 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-使用spark-ml构建回归模型" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/05/10/使用spark-ml构建回归模型/" class="article-date">
+      <time datetime="2020-05-10T06:26:39.000Z" itemprop="datePublished">2020-05-10</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/05/10/使用spark-ml构建回归模型/">使用spark ml构建回归模型</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="使用Spark-MLlib模块进行机器学习模型训练"><a href="#使用Spark-MLlib模块进行机器学习模型训练" class="headerlink" title="使用Spark MLlib模块进行机器学习模型训练"></a>使用Spark MLlib模块进行机器学习模型训练</h1><hr>
+<h2 id="使用模块介绍："><a href="#使用模块介绍：" class="headerlink" title="使用模块介绍："></a>使用模块介绍：</h2><p><strong>Spark MLlib是基于dataframe数据格式的机器学习模块，Spark ML支持基于Pipeline的数据流式模型训练，我们可以通过构建一个一个的stage模块组成Pipeline模块，进行模型训练。</strong></p>
+<h2 id="建模流程："><a href="#建模流程：" class="headerlink" title="建模流程："></a>建模流程：</h2><p><strong>数据加载 ==&gt; 特征预处理 ==&gt; 算法初始化 ==&gt; 构建Pipeline处理器 ==&gt; 模型评估</strong></p>
+<p><strong>完整代码位于</strong>：<a href="https://github.com/zhangruipython/ETLPlatform/blob/master/SparkPlatform/src/main/java/com/application/ml/RegressionPipeline.java" target="_blank" rel="noopener">https://github.com/zhangruipython/ETLPlatform/blob/master/SparkPlatform/src/main/java/com/application/ml/RegressionPipeline.java</a> </p>
+<hr>
+<h2 id="数据加载："><a href="#数据加载：" class="headerlink" title="数据加载："></a>数据加载：</h2><p><strong>由于旧的基于RDD数据格式进行模型训练的Spark MLlib已经弃用，所以统一将数据加载为dataframe数据格式</strong></p>
+<p>由于数据源是CSV文件，所以需要注明head和分隔符，因为数据源数据并不大所以可以全部缓存在内存中，便于加速训练。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Dataset&lt;Row&gt; dataDf = spark.read().format(<span class="string">"csv"</span>).option(<span class="string">"header"</span>,<span class="string">"true"</span>).option(<span class="string">"sep"</span>, <span class="string">","</span>)</span><br><span class="line">      .option(<span class="string">"inferSchema"</span>, <span class="string">"true"</span>).load(<span class="string">"D:/rongze/notebook/SCT___a___v4_prepared.csv"</span>).cache();</span><br></pre></td></tr></table></figure>
+<h2 id="特征预处理："><a href="#特征预处理：" class="headerlink" title="特征预处理："></a>特征预处理：</h2><p><strong>数据特征预处理步骤如下：</strong></p>
+<h3 id="缺失值补充-gt-区分字符型和数值型变量-gt-字符型变量转为哑变量-gt-数值类型变量归一化-gt-数值型变量进行共线性检验-gt-特征变量合并"><a href="#缺失值补充-gt-区分字符型和数值型变量-gt-字符型变量转为哑变量-gt-数值类型变量归一化-gt-数值型变量进行共线性检验-gt-特征变量合并" class="headerlink" title="缺失值补充 ==&gt; 区分字符型和数值型变量 ==&gt; 字符型变量转为哑变量 ==&gt; 数值类型变量归一化 =&gt; 数值型变量进行共线性检验 ==&gt; 特征变量合并"></a>缺失值补充 ==&gt; 区分字符型和数值型变量 ==&gt; 字符型变量转为哑变量 ==&gt; 数值类型变量归一化 =&gt; 数值型变量进行共线性检验 ==&gt; 特征变量合并</h3><h3 id="区分字符型和数值型变量："><a href="#区分字符型和数值型变量：" class="headerlink" title="区分字符型和数值型变量："></a>区分字符型和数值型变量：</h3><p><strong>通过遍历找出字符类型变量和数值类型变量，同时去除label变量</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">String str = &quot;StringType&quot;;</span><br><span class="line">List&lt;String&gt; strColumns = new ArrayList&lt;String&gt;();</span><br><span class="line">dataDf.schema().foreach(s-&gt;&#123;</span><br><span class="line">            // 判断列属性</span><br><span class="line">            if(str.equals(s.dataType().toString()))&#123;</span><br><span class="line">                strColumns.add(s.name());</span><br><span class="line">            &#125;</span><br><span class="line">            return strColumns;</span><br><span class="line">        &#125;);</span><br><span class="line">List&lt;String&gt; numberColumns = Arrays.stream(dataDf.columns()).filter(item-&gt;!strColumns.contains(item)).collect(Collectors.toList());</span><br><span class="line">numberColumns.remove(&quot;SCT&quot;); //去除label变量</span><br></pre></td></tr></table></figure>
+<h3 id="字符型变量进行OneHot编码转换："><a href="#字符型变量进行OneHot编码转换：" class="headerlink" title="字符型变量进行OneHot编码转换："></a>字符型变量进行OneHot编码转换：</h3><p><strong>字符类型变量转为哑变量的过程由两部构成：</strong></p>
+<p><strong>（1）字符变量索引为对应的数值index，这里调用了Spark ML的String Indexer模块对字符变量进行索引，由于只能对单个元素进行索引，所以只能放在了循环中迭代处理，代码如下:</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; indexColumns = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        List&lt;String&gt; vocColumns = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (String strColumn : strColumns) &#123;</span><br><span class="line">            String columnIndex = strColumn + <span class="string">"_index"</span>;</span><br><span class="line">            String columnVoc = strColumn + <span class="string">"_voc"</span>;</span><br><span class="line">            indexColumns.add(columnIndex);</span><br><span class="line">            vocColumns.add(columnVoc);</span><br><span class="line">            StringIndexer indexer = <span class="keyword">new</span> StringIndexer().setInputCol(strColumn).setOutputCol(columnIndex);</span><br><span class="line">            dataDf = indexer.fit(dataDf).transform(dataDf);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>（2）字符索引数值类型变量OneHot处理，这里是调用了Spark ML中的 OneHotEncoderEstimator 模块，与字符变量索引为数值变量不同的是，这次操作没有将dataframe数据落地，而是通过生成Model构建Pipeline中的stage，代码如下</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">OneHotEncoderModel oneHotModel = <span class="keyword">new</span> OneHotEncoderEstimator().setInputCols(indexColumns.toArray(<span class="keyword">new</span> String[<span class="number">0</span>])).setOutputCols(vocColumns.toArray(<span class="keyword">new</span> String[<span class="number">0</span>])).fit(dataDf);</span><br></pre></td></tr></table></figure>
+<h3 id="特征变量合并"><a href="#特征变量合并" class="headerlink" title="特征变量合并"></a>特征变量合并</h3><p><strong>将所有特征变量合并为feature变量，生成stage</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VectorAssembler vectorAssembler = new VectorAssembler().setInputCols(numberColumns.toArray(new String[0])).setOutputCol(&quot;features&quot;);</span><br></pre></td></tr></table></figure>
+<p>注：由于元数据的特殊性，所以这次回归模型构建没有进行共线性检验，同时所有的缺失数据预处理已经在Dataiku平台上完成。</p>
+<h2 id="算法初始化"><a href="#算法初始化" class="headerlink" title="算法初始化"></a>算法初始化</h2><p><strong>Spark MLlib模块支持大部分的回归算法，这次预测模型训练选用了梯度提升回归树算法</strong></p>
+<p><strong>将算法进行初始化，设定label变量和feature变量以及迭代次数，构建Pipeline的stage</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GBTRegressor gbt  = <span class="keyword">new</span> GBTRegressor().setLabelCol(<span class="string">"SCT"</span>).setFeaturesCol(<span class="string">"features"</span>).setMaxIter(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="构建Pipeline处理器"><a href="#构建Pipeline处理器" class="headerlink" title="构建Pipeline处理器"></a>构建Pipeline处理器</h2><p><strong>将各个模块stage传入Pipeline中</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Pipeline pipeline = <span class="keyword">new</span> Pipeline().setStages(<span class="keyword">new</span> PipelineStage[]&#123;oneHotModel,vectorAssembler,gbt&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>Pipeline模型训练</strong></p>
+<p>将dataframe格式的元数据split为train data和test data进行模型训练</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Dataset&lt;Row&gt;[] splitDf = dataDf.randomSplit(new double[]&#123;0.8,0.2&#125;);</span><br><span class="line">PipelineModel pipelineModel = pipeline.fit(splitDf[0]);</span><br></pre></td></tr></table></figure>
+<h2 id="模型评估"><a href="#模型评估" class="headerlink" title="模型评估"></a>模型评估</h2><p><strong>计算模型R2 Score</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Dataset&lt;Row&gt; prediction = pipelineModel.transform(splitDf[1]);</span><br><span class="line">prediction.select(&quot;SCT&quot;,&quot;prediction&quot;,&quot;features&quot;).show(100);</span><br><span class="line">RegressionEvaluator evaluator = new RegressionEvaluator().setLabelCol(&quot;SCT&quot;).setMetricName(&quot;r2&quot;).setPredictionCol(&quot;prediction&quot;);</span><br><span class="line">System.out.println(evaluator.evaluate(prediction));</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="对使用Spark-ML中Pipeline进行模型训练的一些总结："><a href="#对使用Spark-ML中Pipeline进行模型训练的一些总结：" class="headerlink" title="对使用Spark ML中Pipeline进行模型训练的一些总结："></a>对使用Spark ML中Pipeline进行模型训练的一些总结：</h2><p><strong>1、我一开始并没有使用Pipeline流进行模型训练，而是基于训练数据，不断处理dataframe，每一步都将dataframe数据落地，这样导致的后果就是代码复杂，而且模型训练时间很长，整个流程耗时达到了1分多钟，这对比Sklearn实在是糟心，在使用Pipeline流式处理后，流程耗时只有2s左右，速度提升很大，使用Pipeline的关键在于不要去手动操作dataframe数据，整个Pipeline中应该只有一个数据入口，所有操作都要写成stage，这样要求我们必须熟悉Spark MLlib模块的API，所有在写代码之前需要仔细研究API入口，没有文档就需要我们去源码查阅。</strong></p>
+<p><strong>2、Pipeline一个好处在于，整个Pipeline Model是可以持久化的，这样我们训练好模型后，只要load模型，传入数据就可以获取预测值，不需要再次进行数据预处理，方便了模型的应用。</strong></p>
+<p>3、<strong>最后是谈一下，Spark ML模块的一个缺点，Spark ML模块在Maven中的主要依赖包是</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;spark-mllib_2.12&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;2.4.5&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>但是当我在window环境中load持久化到本地的Pipeline模型时，会报包缺失的异常，当我直接submit jar包到Spark中是没问题的，这样带来的后果就是如果想将代码打包给别人用会有包缺失的异常，如果将所有依赖包都添加进来，这样jar会特别大，总而言之Spark ML不适合轻量级的单机版机器学习模型应用，如果使用JVM语言进行机器学习，可以使用smile平台。</strong></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-spark操作注意事项" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/04/29/spark操作注意事项/" class="article-date">
+      <time datetime="2020-04-29T14:13:08.489Z" itemprop="datePublished">2020-04-29</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-nvidia-docker配置darknet应用镜像环境" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -933,142 +1071,6 @@
       
     <div class="article-tag tagcloud">
         <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSM/">SSM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringMVC/">SpringMVC</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-数据库" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2018/06/20/数据库/" class="article-date">
-      <time datetime="2018-06-20T10:04:55.000Z" itemprop="datePublished">2018-06-20</time>
-</a>
-
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/20/数据库/">数据库</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h2 id="数据库好难"><a href="#数据库好难" class="headerlink" title="数据库好难"></a>数据库好难</h2><h3 id="今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了"><a href="#今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了" class="headerlink" title="今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了"></a>今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了</h3><hr>
-<p>在高并发情景下经常发生数据库丢失更新的情况，事务之间什么时候该同步，什么时候不该同步，多个事务之间的权限管理真的很复杂。一般采用<strong>隔离级别</strong>来减少出现丢失更新的可能性，至于乐观锁和悲观锁，这个要等我看完了再说。<br>SQL标准定义了隔离级别有以下四层：</p>
-<ul>
-<li>脏读：最低的隔离级别，允许一个事务去读取另一个事务中未提交的数据。</li>
-<li>读/写操作：一个事务只能读取另一个事务已经提交的数据</li>
-<li>可重复读：针对数据库同一条记录而言，可重复读会使同一条数据库记录的读/写按照一个序列化进行操作，不会产生交叉情况，从而保证同一条数据的一致性</li>
-<li>序列化：让SQL按照顺序读/写的方式，能消除数据库事务之间并发产生数据不一致的问题。</li>
-</ul>
-<center><strong><em>各类隔离级别和产生的现象</em></strong></center>
-
-
-<p>脏读（产生影响）：脏读，不可重读，幻读<br>读/写提交（产生影响）：脏读，不可重读，幻读<br>可重复读（产生影响）：幻读<br>序列化（产生影响）：（没有）</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-MapReduce" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2018/04/12/MapReduce/" class="article-date">
-      <time datetime="2018-04-12T13:51:45.000Z" itemprop="datePublished">2018-04-12</time>
-</a>
-
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/12/MapReduce/">MapReduce</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h2 id="MapReduce运行步骤"><a href="#MapReduce运行步骤" class="headerlink" title="MapReduce运行步骤"></a>MapReduce运行步骤</h2><p>1、【input阶段】获取输入数据进行分片作为map的输入<br>2、【map阶段】过程对某种输入格式的一条记录解析一条或多条记录<br>3、【shffle阶段】对中间数据的控制，作为reduce的输入<br>4、【reduce阶段】对相同key的数据进行合并<br>5、【output阶段】按照格式输出到指定目录</p>
-<h3 id="MapReduce作业（job）"><a href="#MapReduce作业（job）" class="headerlink" title="MapReduce作业（job）:"></a>MapReduce作业（job）:</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">客户端需要执行的一个工作单元，它包括输入数据，MapReduce程序和配置信息</span><br></pre></td></tr></table></figure>
-<h3 id="任务（task）："><a href="#任务（task）：" class="headerlink" title="任务（task）："></a>任务（task）：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hadoop将作业分成若干个小任务来执行，其中包括两类任务：map任务和reduce任务。这些任务由yarn进行调度并运行在集群的节点上</span><br></pre></td></tr></table></figure>
-<h3 id="数据块（block）："><a href="#数据块（block）：" class="headerlink" title="数据块（block）："></a>数据块（block）：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HDFS上的文件被划分为大小相同的数据块，作为独立的存储单元，数据块的默认大小为128m</span><br></pre></td></tr></table></figure>
-<h3 id="输入分片（input-split）："><a href="#输入分片（input-split）：" class="headerlink" title="输入分片（input split）："></a>输入分片（input split）：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Hadoop将MapReduce的数据划分为等长的小数据块，输入分片，或者简称“分片”。InputSplit分为两种情况：</span><br><span class="line">-如果数据记录位于一个数据块中，InputSplit可表示完整的数据记录集，例如第一个InputSplit</span><br><span class="line">-如果数据记录跨两个数据块，InputSplit中会包含第二个数据块的位置以及所需完整数据的偏移量。如第2-5个InputSplit。</span><br><span class="line">默认情况下InputSprit与block大小一致</span><br></pre></td></tr></table></figure>
-<p>Map阶段的运行结果是保存在本地文件上的</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MapReduce/">MapReduce</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li></ul>
     </div>
 
       

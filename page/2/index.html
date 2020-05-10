@@ -260,6 +260,142 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-数据库" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/06/20/数据库/" class="article-date">
+      <time datetime="2018-06-20T10:04:55.000Z" itemprop="datePublished">2018-06-20</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/20/数据库/">数据库</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="数据库好难"><a href="#数据库好难" class="headerlink" title="数据库好难"></a>数据库好难</h2><h3 id="今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了"><a href="#今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了" class="headerlink" title="今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了"></a>今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了</h3><hr>
+<p>在高并发情景下经常发生数据库丢失更新的情况，事务之间什么时候该同步，什么时候不该同步，多个事务之间的权限管理真的很复杂。一般采用<strong>隔离级别</strong>来减少出现丢失更新的可能性，至于乐观锁和悲观锁，这个要等我看完了再说。<br>SQL标准定义了隔离级别有以下四层：</p>
+<ul>
+<li>脏读：最低的隔离级别，允许一个事务去读取另一个事务中未提交的数据。</li>
+<li>读/写操作：一个事务只能读取另一个事务已经提交的数据</li>
+<li>可重复读：针对数据库同一条记录而言，可重复读会使同一条数据库记录的读/写按照一个序列化进行操作，不会产生交叉情况，从而保证同一条数据的一致性</li>
+<li>序列化：让SQL按照顺序读/写的方式，能消除数据库事务之间并发产生数据不一致的问题。</li>
+</ul>
+<center><strong><em>各类隔离级别和产生的现象</em></strong></center>
+
+
+<p>脏读（产生影响）：脏读，不可重读，幻读<br>读/写提交（产生影响）：脏读，不可重读，幻读<br>可重复读（产生影响）：幻读<br>序列化（产生影响）：（没有）</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库/">数据库</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-MapReduce" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/04/12/MapReduce/" class="article-date">
+      <time datetime="2018-04-12T13:51:45.000Z" itemprop="datePublished">2018-04-12</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/12/MapReduce/">MapReduce</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="MapReduce运行步骤"><a href="#MapReduce运行步骤" class="headerlink" title="MapReduce运行步骤"></a>MapReduce运行步骤</h2><p>1、【input阶段】获取输入数据进行分片作为map的输入<br>2、【map阶段】过程对某种输入格式的一条记录解析一条或多条记录<br>3、【shffle阶段】对中间数据的控制，作为reduce的输入<br>4、【reduce阶段】对相同key的数据进行合并<br>5、【output阶段】按照格式输出到指定目录</p>
+<h3 id="MapReduce作业（job）"><a href="#MapReduce作业（job）" class="headerlink" title="MapReduce作业（job）:"></a>MapReduce作业（job）:</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">客户端需要执行的一个工作单元，它包括输入数据，MapReduce程序和配置信息</span><br></pre></td></tr></table></figure>
+<h3 id="任务（task）："><a href="#任务（task）：" class="headerlink" title="任务（task）："></a>任务（task）：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hadoop将作业分成若干个小任务来执行，其中包括两类任务：map任务和reduce任务。这些任务由yarn进行调度并运行在集群的节点上</span><br></pre></td></tr></table></figure>
+<h3 id="数据块（block）："><a href="#数据块（block）：" class="headerlink" title="数据块（block）："></a>数据块（block）：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HDFS上的文件被划分为大小相同的数据块，作为独立的存储单元，数据块的默认大小为128m</span><br></pre></td></tr></table></figure>
+<h3 id="输入分片（input-split）："><a href="#输入分片（input-split）：" class="headerlink" title="输入分片（input split）："></a>输入分片（input split）：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Hadoop将MapReduce的数据划分为等长的小数据块，输入分片，或者简称“分片”。InputSplit分为两种情况：</span><br><span class="line">-如果数据记录位于一个数据块中，InputSplit可表示完整的数据记录集，例如第一个InputSplit</span><br><span class="line">-如果数据记录跨两个数据块，InputSplit中会包含第二个数据块的位置以及所需完整数据的偏移量。如第2-5个InputSplit。</span><br><span class="line">默认情况下InputSprit与block大小一致</span><br></pre></td></tr></table></figure>
+<p>Map阶段的运行结果是保存在本地文件上的</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MapReduce/">MapReduce</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hadoop/">hadoop</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-Hive介绍与基本操作" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
