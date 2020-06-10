@@ -623,7 +623,8 @@
       
         
           
-            <h2 id="使用目标"><a href="#使用目标" class="headerlink" title="使用目标"></a>使用目标</h2><p><strong>通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理</strong></p>
+            <h1 id="nvidia-docker配置GPU-深度学习镜像"><a href="#nvidia-docker配置GPU-深度学习镜像" class="headerlink" title="nvidia docker配置GPU 深度学习镜像"></a>nvidia docker配置GPU 深度学习镜像</h1><hr>
+<h2 id="使用目标"><a href="#使用目标" class="headerlink" title="使用目标"></a>使用目标</h2><p><strong>通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理</strong></p>
 <h2 id="安装流程"><a href="#安装流程" class="headerlink" title="安装流程"></a>安装流程</h2><h3 id="安装nvidia-docker"><a href="#安装nvidia-docker" class="headerlink" title="安装nvidia docker"></a>安装nvidia docker</h3><ul>
 <li><p><strong>卸载nvidia-docker和其他GPU容器</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker volume ls -q -f driver=nvidia-docker | xargs -r -I&#123;&#125; -n1 docker ps -q -a -f volume=&#123;&#125; | xargs -r docker rm -f</span><br><span class="line">sudo apt-get purge -y nvidia-docker</span><br></pre></td></tr></table></figure>
@@ -1843,10 +1844,10 @@
               
               
               <div class="site-state-item site-state-tags">
-                <a href="/tags/index-1.html">
+                
                   <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">标签</span>
-                </a>
+                
               </div>
             
 

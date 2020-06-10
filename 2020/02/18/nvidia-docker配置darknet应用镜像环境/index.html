@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="使用目标通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理 安装流程安装nvidia docker 卸载nvidia-docker和其他GPU容器 12docker volume ls -q -f driver=nvidia-docker | xargs -r -I&amp;#123;&amp;#1">
+<meta name="description" content="nvidia docker配置GPU 深度学习镜像 使用目标通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理 安装流程安装nvidia docker 卸载nvidia-docker和其他GPU容器 12docker volume ls -q -f driver=nvidia-doc">
 <meta name="keywords" content="nvidia docker,darknet,cudnn">
 <meta property="og:type" content="article">
 <meta property="og:title" content="nvidia docker配置darknet应用镜像环境">
 <meta property="og:url" content="http://yoursite.com/2020/02/18/nvidia-docker配置darknet应用镜像环境/index.html">
 <meta property="og:site_name" content="Myblogs">
-<meta property="og:description" content="使用目标通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理 安装流程安装nvidia docker 卸载nvidia-docker和其他GPU容器 12docker volume ls -q -f driver=nvidia-docker | xargs -r -I&amp;#123;&amp;#1">
+<meta property="og:description" content="nvidia docker配置GPU 深度学习镜像 使用目标通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理 安装流程安装nvidia docker 卸载nvidia-docker和其他GPU容器 12docker volume ls -q -f driver=nvidia-doc">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-11T05:21:36.436Z">
+<meta property="og:updated_time" content="2020-06-10T12:27:29.182Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nvidia docker配置darknet应用镜像环境">
-<meta name="twitter:description" content="使用目标通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理 安装流程安装nvidia docker 卸载nvidia-docker和其他GPU容器 12docker volume ls -q -f driver=nvidia-docker | xargs -r -I&amp;#123;&amp;#1">
+<meta name="twitter:description" content="nvidia docker配置GPU 深度学习镜像 使用目标通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理 安装流程安装nvidia docker 卸载nvidia-docker和其他GPU容器 12docker volume ls -q -f driver=nvidia-doc">
 
 
 
@@ -330,7 +330,8 @@
       
 
       
-        <h2 id="使用目标"><a href="#使用目标" class="headerlink" title="使用目标"></a>使用目标</h2><p><strong>通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理</strong></p>
+        <h1 id="nvidia-docker配置GPU-深度学习镜像"><a href="#nvidia-docker配置GPU-深度学习镜像" class="headerlink" title="nvidia docker配置GPU 深度学习镜像"></a>nvidia docker配置GPU 深度学习镜像</h1><hr>
+<h2 id="使用目标"><a href="#使用目标" class="headerlink" title="使用目标"></a>使用目标</h2><p><strong>通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理</strong></p>
 <h2 id="安装流程"><a href="#安装流程" class="headerlink" title="安装流程"></a>安装流程</h2><h3 id="安装nvidia-docker"><a href="#安装nvidia-docker" class="headerlink" title="安装nvidia docker"></a>安装nvidia docker</h3><ul>
 <li><p><strong>卸载nvidia-docker和其他GPU容器</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker volume ls -q -f driver=nvidia-docker | xargs -r -I&#123;&#125; -n1 docker ps -q -a -f volume=&#123;&#125; | xargs -r docker rm -f</span><br><span class="line">sudo apt-get purge -y nvidia-docker</span><br></pre></td></tr></table></figure>
@@ -496,10 +497,10 @@
               
               
               <div class="site-state-item site-state-tags">
-                <a href="/tags/index-1.html">
+                
                   <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">标签</span>
-                </a>
+                
               </div>
             
 
@@ -546,7 +547,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用目标"><span class="nav-number">1.</span> <span class="nav-text">使用目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装流程"><span class="nav-number">2.</span> <span class="nav-text">安装流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装nvidia-docker"><span class="nav-number">2.1.</span> <span class="nav-text">安装nvidia docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-nvidia-docker2"><span class="nav-number">2.2.</span> <span class="nav-text">安装 nvidia-docker2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装cuda基础镜像"><span class="nav-number">2.3.</span> <span class="nav-text">安装cuda基础镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新基础cuda镜像"><span class="nav-number">2.4.</span> <span class="nav-text">更新基础cuda镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#预先准备"><span class="nav-number">2.4.1.</span> <span class="nav-text">预先准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装OpenCV"><span class="nav-number">2.4.2.</span> <span class="nav-text">安装OpenCV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装cudnn"><span class="nav-number">2.4.3.</span> <span class="nav-text">安装cudnn</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编译darknet"><span class="nav-number">2.4.4.</span> <span class="nav-text">编译darknet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#根据基础镜像创建容器"><span class="nav-number">2.4.5.</span> <span class="nav-text">根据基础镜像创建容器</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#nvidia-docker配置GPU-深度学习镜像"><span class="nav-number">1.</span> <span class="nav-text">nvidia docker配置GPU 深度学习镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用目标"><span class="nav-number">1.1.</span> <span class="nav-text">使用目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装流程"><span class="nav-number">1.2.</span> <span class="nav-text">安装流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装nvidia-docker"><span class="nav-number">1.2.1.</span> <span class="nav-text">安装nvidia docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-nvidia-docker2"><span class="nav-number">1.2.2.</span> <span class="nav-text">安装 nvidia-docker2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装cuda基础镜像"><span class="nav-number">1.2.3.</span> <span class="nav-text">安装cuda基础镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新基础cuda镜像"><span class="nav-number">1.2.4.</span> <span class="nav-text">更新基础cuda镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#预先准备"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">预先准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装OpenCV"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">安装OpenCV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装cudnn"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">安装cudnn</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编译darknet"><span class="nav-number">1.2.4.4.</span> <span class="nav-text">编译darknet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#根据基础镜像创建容器"><span class="nav-number">1.2.4.5.</span> <span class="nav-text">根据基础镜像创建容器</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
