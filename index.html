@@ -249,6 +249,169 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/01/presto创建UDF函数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="张睿">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myblogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/07/01/presto创建UDF函数/" itemprop="url">presto创建UDF函数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-01T19:05:27+08:00">
+                2020-07-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/01/presto创建UDF函数/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2020/07/01/presto创建UDF函数/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="通过开发Plugin插件方式开发Presto-UDF"><a href="#通过开发Plugin插件方式开发Presto-UDF" class="headerlink" title="通过开发Plugin插件方式开发Presto  UDF"></a>通过开发Plugin插件方式开发Presto  UDF</h2><h3 id="Presto-插件机制为开发者提供了以下功能："><a href="#Presto-插件机制为开发者提供了以下功能：" class="headerlink" title="Presto 插件机制为开发者提供了以下功能："></a>Presto 插件机制为开发者提供了以下功能：</h3><ul>
+<li>对接自定义存储系统</li>
+<li>添加自定义数据类型</li>
+<li>添加自定义处理函数</li>
+<li>自定义权限控制</li>
+</ul>
+<h3 id="以下是开发Presto-UDF函数的步骤"><a href="#以下是开发Presto-UDF函数的步骤" class="headerlink" title="以下是开发Presto UDF函数的步骤"></a>以下是开发Presto UDF函数的步骤</h3><h4 id="1、逻辑代码开发"><a href="#1、逻辑代码开发" class="headerlink" title="1、逻辑代码开发"></a>1、逻辑代码开发</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UdfDemo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">UdfDemo</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="meta">@Description</span>(<span class="string">"两值相除"</span>)</span><br><span class="line">    <span class="meta">@ScalarFunction</span>(value = <span class="string">"divide"</span>)</span><br><span class="line">    <span class="meta">@SqlType</span>(StandardTypes.DOUBLE)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> <span class="title">divide</span><span class="params">(@SqlType(StandardTypes.DOUBLE)</span> <span class="keyword">double</span> num01,@<span class="title">SqlType</span><span class="params">(StandardTypes.DOUBLE)</span> <span class="keyword">double</span> num02)</span>&#123;</span><br><span class="line">        <span class="keyword">double</span> result = num01/num02;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意点</strong></p>
+<ul>
+<li>@Description 是自定义方法注释</li>
+<li>@ScalarFunction 是函数名称</li>
+<li>@SqlType 是函数出参</li>
+<li>@ScalarFunction 中函数名称需要和具体方法名称保持一致</li>
+<li>方法入参需要添加 @SqlType 控制Java类型与Presto类型对应</li>
+</ul>
+<h4 id="2、插件编写"><a href="#2、插件编写" class="headerlink" title="2、插件编写"></a>2、插件编写</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoPlugin</span> <span class="keyword">implements</span> <span class="title">Plugin</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Set&lt;Class&lt;?&gt;&gt; getFunctions() &#123;</span><br><span class="line">        <span class="keyword">return</span>  ImmutableSet.&lt;Class&lt;?&gt;&gt;builder()</span><br><span class="line">                .add(UdfDemo.class)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意点</strong></p>
+<ul>
+<li>add所添加类即为对应的UDF方法类</li>
+</ul>
+<h4 id="3、服务注册"><a href="#3、服务注册" class="headerlink" title="3、服务注册"></a>3、服务注册</h4><ul>
+<li>在src/main/ 目录下创建以下文件夹resource/META-INF/services</li>
+<li>在services文件夹中添加名称为 com.facebook.presto.spi.Plugin的文件</li>
+<li>在 com.facebook.presto.spi.Plugin中添加实现的插件类名称，如图所示</li>
+</ul>
+<p><img src="https://i.loli.net/2020/07/01/GKquke9A7WZCEgV.png" alt="批注 2020-07-01 192624.png"></p>
+<h4 id="4、发布jar包"><a href="#4、发布jar包" class="headerlink" title="4、发布jar包"></a>4、发布jar包</h4><ul>
+<li>用maven 将项目打包（添加所有依赖）</li>
+<li>在presto 安装目录下的plugin 文件夹中新建文件夹名称为UDF名称，将jar包放置于该文件夹中</li>
+<li>重启presto服务</li>
+</ul>
+<h4 id="5、在cli端使用UDF"><a href="#5、在cli端使用UDF" class="headerlink" title="5、在cli端使用UDF"></a>5、在cli端使用UDF</h4><p><strong>如图所示</strong></p>
+<p><img src="https://i.loli.net/2020/07/01/upA8LWI4mFQUi5Z.png" alt="批注 2020-07-01 193431.png"></p>
+<h3 id="过程中可能出现的异常"><a href="#过程中可能出现的异常" class="headerlink" title="过程中可能出现的异常"></a>过程中可能出现的异常</h3><h4 id="presto-启动日志中出现-localfile-already-exist，原因maven打包中添加了-以下依赖"><a href="#presto-启动日志中出现-localfile-already-exist，原因maven打包中添加了-以下依赖" class="headerlink" title="presto 启动日志中出现 localfile already exist，原因maven打包中添加了 以下依赖"></a>presto 启动日志中出现 localfile already exist，原因maven打包中添加了 以下依赖</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;com.facebook.presto&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;presto-local-file&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;0.235.1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/10/使用spark-ml构建回归模型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -896,154 +1059,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/20/pyspark-udf自定义函数/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="张睿">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Myblogs">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/20/pyspark-udf自定义函数/" itemprop="url">pyspark udf自定义函数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-20T16:56:39+08:00">
-                2019-04-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/04/20/pyspark-udf自定义函数/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/20/pyspark-udf自定义函数/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="pyspark-udf自定义函数"><a href="#pyspark-udf自定义函数" class="headerlink" title="pyspark udf自定义函数"></a>pyspark udf自定义函数</h2><h3 id="spark-udf的定义："><a href="#spark-udf的定义：" class="headerlink" title="spark udf的定义："></a>spark udf的定义：</h3><h4 id="UDF-User-defined-functions-UDFs-即用户自定义函数，在Spark-Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。"><a href="#UDF-User-defined-functions-UDFs-即用户自定义函数，在Spark-Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。" class="headerlink" title="UDF(User-defined functions, UDFs),即用户自定义函数，在Spark Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。"></a>UDF(User-defined functions, UDFs),即用户自定义函数，在Spark Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。</h4><h3 id="实际应用："><a href="#实际应用：" class="headerlink" title="实际应用："></a>实际应用：</h3><ul>
-<li>定义一个函数</li>
-</ul>
-<p>这是一个普通的判断函数</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_bad_point</span><span class="params">(grid01_order_index, grid02_order_index, grid01_hash, grid02_hash)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> grid01_order_index &lt; grid02_order_index:</span><br><span class="line">        <span class="keyword">return</span> grid02_hash</span><br><span class="line">    <span class="keyword">elif</span> grid02_order_index &lt; grid01_order_index:</span><br><span class="line">        <span class="keyword">return</span> grid01_hash</span><br></pre></td></tr></table></figure>
-<ul>
-<li>将函数注册为spark udf</li>
-</ul>
-<p>这里需要表明方法的返回值类型</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_bad_udf = udf(get_bad_point, StringType())</span><br></pre></td></tr></table></figure>
-<ul>
-<li>结合spark SQL自带方法使用</li>
-</ul>
-<p>向udf函数传入spark dataframe中列名作为参数</p>
-<p>alias为udf返回的结果生成别名</p>
-<p>distinct()是对dataframe中数据进行去重</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">unmatched_point_df = unmatched_distance_point.select(</span><br><span class="line">       get_bad_udf(<span class="string">"grid01_order_index"</span>, <span class="string">"grid02_order_index"</span>, <span class="string">"grid01_hash"</span>,</span><br><span class="line">                   <span class="string">"grid02_hash"</span>).alias(<span class="string">"bad_point_hash"</span>)).distinct()</span><br></pre></td></tr></table></figure>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>pyspark的使用可以大大降低编写spark查询的代码量，结合udf函数的使用使我们操作spark SQL时不需要写大量的SQL脚本，由于spark SQL为我们封装了许多的操作函数，比如：过滤filter，两个dataframe之间取差集exceptAll  等等</p>
-<p>所以我们编写spark 程序代码量不应该很多，如果代码量很多出现了大量的for循环，if判断等那么我们的代码就需要优化，原因就是所有的SQL都是循环+判断，所以可以用spark SQL就用spark SQL，最好不要手写循环判断。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/20/postgres+pyspark计算前100最短距离/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1151,6 +1166,154 @@
 <ul>
 <li>最后我们可以在数据库中得到我们想要的表（目前spark所有配置都是默认配置没有优化，包括SQL也没有优化，待日后进行优化）</li>
 </ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/20/pyspark-udf自定义函数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="张睿">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myblogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/20/pyspark-udf自定义函数/" itemprop="url">pyspark udf自定义函数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-20T16:56:39+08:00">
+                2019-04-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/04/20/pyspark-udf自定义函数/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/04/20/pyspark-udf自定义函数/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="pyspark-udf自定义函数"><a href="#pyspark-udf自定义函数" class="headerlink" title="pyspark udf自定义函数"></a>pyspark udf自定义函数</h2><h3 id="spark-udf的定义："><a href="#spark-udf的定义：" class="headerlink" title="spark udf的定义："></a>spark udf的定义：</h3><h4 id="UDF-User-defined-functions-UDFs-即用户自定义函数，在Spark-Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。"><a href="#UDF-User-defined-functions-UDFs-即用户自定义函数，在Spark-Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。" class="headerlink" title="UDF(User-defined functions, UDFs),即用户自定义函数，在Spark Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。"></a>UDF(User-defined functions, UDFs),即用户自定义函数，在Spark Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。</h4><h3 id="实际应用："><a href="#实际应用：" class="headerlink" title="实际应用："></a>实际应用：</h3><ul>
+<li>定义一个函数</li>
+</ul>
+<p>这是一个普通的判断函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_bad_point</span><span class="params">(grid01_order_index, grid02_order_index, grid01_hash, grid02_hash)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> grid01_order_index &lt; grid02_order_index:</span><br><span class="line">        <span class="keyword">return</span> grid02_hash</span><br><span class="line">    <span class="keyword">elif</span> grid02_order_index &lt; grid01_order_index:</span><br><span class="line">        <span class="keyword">return</span> grid01_hash</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将函数注册为spark udf</li>
+</ul>
+<p>这里需要表明方法的返回值类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_bad_udf = udf(get_bad_point, StringType())</span><br></pre></td></tr></table></figure>
+<ul>
+<li>结合spark SQL自带方法使用</li>
+</ul>
+<p>向udf函数传入spark dataframe中列名作为参数</p>
+<p>alias为udf返回的结果生成别名</p>
+<p>distinct()是对dataframe中数据进行去重</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">unmatched_point_df = unmatched_distance_point.select(</span><br><span class="line">       get_bad_udf(<span class="string">"grid01_order_index"</span>, <span class="string">"grid02_order_index"</span>, <span class="string">"grid01_hash"</span>,</span><br><span class="line">                   <span class="string">"grid02_hash"</span>).alias(<span class="string">"bad_point_hash"</span>)).distinct()</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>pyspark的使用可以大大降低编写spark查询的代码量，结合udf函数的使用使我们操作spark SQL时不需要写大量的SQL脚本，由于spark SQL为我们封装了许多的操作函数，比如：过滤filter，两个dataframe之间取差集exceptAll  等等</p>
+<p>所以我们编写spark 程序代码量不应该很多，如果代码量很多出现了大量的for循环，if判断等那么我们的代码就需要优化，原因就是所有的SQL都是循环+判断，所以可以用spark SQL就用spark SQL，最好不要手写循环判断。</p>
 
           
         
@@ -1653,147 +1816,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/20/数据库/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="张睿">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Myblogs">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/20/数据库/" itemprop="url">数据库</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-20T18:04:55+08:00">
-                2018-06-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/06/20/数据库/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/06/20/数据库/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="数据库好难"><a href="#数据库好难" class="headerlink" title="数据库好难"></a>数据库好难</h2><h3 id="今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了"><a href="#今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了" class="headerlink" title="今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了"></a>今天看了一回儿数据库的丢失更新，顿时感觉数据库真的满抽象的，以前以为数据库就是增删改查，今天算是见识了，头都看大了</h3><hr>
-<p>在高并发情景下经常发生数据库丢失更新的情况，事务之间什么时候该同步，什么时候不该同步，多个事务之间的权限管理真的很复杂。一般采用<strong>隔离级别</strong>来减少出现丢失更新的可能性，至于乐观锁和悲观锁，这个要等我看完了再说。<br>SQL标准定义了隔离级别有以下四层：</p>
-<ul>
-<li>脏读：最低的隔离级别，允许一个事务去读取另一个事务中未提交的数据。</li>
-<li>读/写操作：一个事务只能读取另一个事务已经提交的数据</li>
-<li>可重复读：针对数据库同一条记录而言，可重复读会使同一条数据库记录的读/写按照一个序列化进行操作，不会产生交叉情况，从而保证同一条数据的一致性</li>
-<li>序列化：让SQL按照顺序读/写的方式，能消除数据库事务之间并发产生数据不一致的问题。</li>
-</ul>
-<center><strong><em>各类隔离级别和产生的现象</em></strong></center>
-
-
-<p>脏读（产生影响）：脏读，不可重读，幻读<br>读/写提交（产生影响）：脏读，不可重读，幻读<br>可重复读（产生影响）：幻读<br>序列化（产生影响）：（没有）</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1844,7 +1866,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1857,7 +1879,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index-1.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
