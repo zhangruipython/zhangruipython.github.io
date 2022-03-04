@@ -199,6 +199,81 @@
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2018/09/07/%E5%88%9D%E5%85%A5SpringMVC%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/09/07/%E5%88%9D%E5%85%A5SpringMVC%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/" class="post-title-link" itemprop="url">SpringMVC遇到的坑</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2018-09-07 21:48:58 / Modified: 21:50:40" itemprop="dateCreated datePublished" datetime="2018-09-07T21:48:58+08:00">2018-09-07</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="初入SpringMVC遇到的坑"><a href="#初入SpringMVC遇到的坑" class="headerlink" title="初入SpringMVC遇到的坑"></a>初入SpringMVC遇到的坑</h1><p><strong>这几天在看SpringMVC，按照书上写入门案例，然而踩到了无数的坑</strong>。。。。。</p>
+<h4 id="1、-导包问题"><a href="#1、-导包问题" class="headerlink" title="1、 导包问题"></a>1、 导包问题</h4><p>刚开始我是规规矩矩的使用Maven导包，然而在运行程序时却一直报包丢失的错误</p>
+<p>弄得很烦，在网上看了一下，发现Maven Web项目有时候需要自己手动将包导入项目</p>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><p>在项目右键Properties 选择Deployment Assembly  点击 Add 选择 Java Build Path Entries</p>
+<p>点击next  选择maven包  apply然后finish</p>
+<h4 id="2、maven问题"><a href="#2、maven问题" class="headerlink" title="2、maven问题"></a>2、maven问题</h4><p>紧接着又遇到了maven包下载不完全的问题，有的时候网络情况不好的情况下，maven</p>
+<p>下载包有时候会缺失</p>
+<h4 id="解决方法-1"><a href="#解决方法-1" class="headerlink" title="解决方法"></a>解决方法</h4><p>我手动从网上下载了SpringMVC的包（主要是没有找到比较好的解决方法）</p>
+<h4 id="3、java-版本问题"><a href="#3、java-版本问题" class="headerlink" title="3、java 版本问题"></a>3、java 版本问题</h4><p>这个问题让我头疼了好几天，就是因为在自己电脑上配置时没有出现问题，可是回到教室的电脑上</p>
+<p>问题就出现了，显示为【org.springframework.web.servlet.PageNotFound】在你输入对应的URI时</p>
+<p>总是显示【No mapping found for HTTP request with URI…….】，最后发现是java版本的问题好像在jdk1.6</p>
+<p>就会出现此问题</p>
+<h4 id="解决方法-2"><a href="#解决方法-2" class="headerlink" title="解决方法"></a>解决方法</h4><p>在eclipse中，右击项目properties，选择 Java Compiler将其版本改为1.7</p>
+<h3 id="最终结果"><a href="#最终结果" class="headerlink" title="最终结果"></a>最终结果</h3><p>历经了一个半星期我终于将一个比较初级SSM框架搭建成功，实现了由URI返回id实现对数据库的操作</p>
+<ul>
+<li>一定要注意java开发环境的JDK要和配置的JDK保持一致，不然Tomcat会出现各种问题</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
 
@@ -265,9 +340,13 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">posts</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span>
       </div>
   </nav>
 </div>
