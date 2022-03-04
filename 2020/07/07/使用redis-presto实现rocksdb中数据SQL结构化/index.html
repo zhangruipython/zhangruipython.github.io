@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruipython.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="通过使用presto结合Redis实现RocksDB数据SQL结构化为什么使用presto结合redis的方式实现？ 一开始我的目标是：因为presto支持自定义数据源插件开发，所以自己实现以RocksDB 作为数据源的插件，但是在开发过程中发现，因为RocksDB 数据源与业务耦合太紧，许多操作需要定制化开发，例如数据解密、数据反序列化、metadata映射等问题，这一步很难通过读取外部的配置文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用redis+presto实现RocksDB中数据SQL结构化">
+<meta property="og:url" content="https://zhangruipython.github.io/2020/07/07/%E4%BD%BF%E7%94%A8redis-presto%E5%AE%9E%E7%8E%B0rocksdb%E4%B8%AD%E6%95%B0%E6%8D%AESQL%E7%BB%93%E6%9E%84%E5%8C%96/index.html">
+<meta property="og:site_name" content="MyBlog">
+<meta property="og:description" content="通过使用presto结合Redis实现RocksDB数据SQL结构化为什么使用presto结合redis的方式实现？ 一开始我的目标是：因为presto支持自定义数据源插件开发，所以自己实现以RocksDB 作为数据源的插件，但是在开发过程中发现，因为RocksDB 数据源与业务耦合太紧，许多操作需要定制化开发，例如数据解密、数据反序列化、metadata映射等问题，这一步很难通过读取外部的配置文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/07/07/A1Yh6c5Hvgpib9L.png">
+<meta property="article:published_time" content="2020-07-07T08:06:05.000Z">
+<meta property="article:modified_time" content="2020-07-07T09:30:00.000Z">
+<meta property="article:author" content="张睿">
+<meta property="article:tag" content="presto">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/07/07/A1Yh6c5Hvgpib9L.png">
+
+<link rel="canonical" href="https://zhangruipython.github.io/2020/07/07/%E4%BD%BF%E7%94%A8redis-presto%E5%AE%9E%E7%8E%B0rocksdb%E4%B8%AD%E6%95%B0%E6%8D%AESQL%E7%BB%93%E6%9E%84%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>使用redis+presto实现RocksDB中数据SQL结构化 | MyBlog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MyBlog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhangruipython.github.io/2020/07/07/%E4%BD%BF%E7%94%A8redis-presto%E5%AE%9E%E7%8E%B0rocksdb%E4%B8%AD%E6%95%B0%E6%8D%AESQL%E7%BB%93%E6%9E%84%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="张睿">
+      <meta itemprop="description" content="我的学习记录">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MyBlog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用redis+presto实现RocksDB中数据SQL结构化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-07-07 16:06:05 / 修改时间：17:30:00" itemprop="dateCreated datePublished" datetime="2020-07-07T16:06:05+08:00">2020-07-07</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="通过使用presto结合Redis实现RocksDB数据SQL结构化"><a href="#通过使用presto结合Redis实现RocksDB数据SQL结构化" class="headerlink" title="通过使用presto结合Redis实现RocksDB数据SQL结构化"></a>通过使用presto结合Redis实现RocksDB数据SQL结构化</h2><h3 id="为什么使用presto结合redis的方式实现？"><a href="#为什么使用presto结合redis的方式实现？" class="headerlink" title="为什么使用presto结合redis的方式实现？"></a>为什么使用presto结合redis的方式实现？</h3><ul>
+<li>一开始我的目标是：因为presto支持自定义数据源插件开发，所以自己实现以RocksDB 作为数据源的插件，但是在开发过程中发现，因为RocksDB 数据源与业务耦合太紧，许多操作需要定制化开发，例如数据解密、数据反序列化、metadata映射等问题，这一步很难通过读取外部的配置文件或者通过presto客户端传递参数实现。所以我想借助第三方数据中间件进行业务与功能的去耦合。</li>
+</ul>
+<h3 id="实现以redis作为数据源，presto作为即席查询分析"><a href="#实现以redis作为数据源，presto作为即席查询分析" class="headerlink" title="实现以redis作为数据源，presto作为即席查询分析"></a>实现以redis作为数据源，presto作为即席查询分析</h3><h4 id="什么是即席查询分析"><a href="#什么是即席查询分析" class="headerlink" title="什么是即席查询分析"></a>什么是即席查询分析</h4><ul>
+<li>即席查询分析（Ad Hoc）：用户根据自身需求灵活选择查询条件，即席查询与普通应用查询最大的不同是普通的应用查询是定制开发的，而即席查询是由用户自定义查询条件的。 </li>
+<li>即席查询和分析的计算模式兼具了良好的时效性与灵活性，是对批处理，流计算两大计算模式有力补充。</li>
+</ul>
+<h4 id="开发步骤"><a href="#开发步骤" class="headerlink" title="开发步骤"></a>开发步骤</h4><ul>
+<li>在presto中配置redis有关参数，在etc&#x2F;catalog&#x2F;目录下新建redis.properties 配置如下：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 连接名称</span><br><span class="line">connector.name=redis</span><br><span class="line"># redis服务端节点地址</span><br><span class="line">redis.nodes=192.168.1.54:6379</span><br><span class="line"># redis中表名称</span><br><span class="line">redis.table-names=user_info</span><br><span class="line"># redis中库名称</span><br><span class="line">redis.default-schema=user_profile</span><br><span class="line"># redis metadata配置文件路径</span><br><span class="line">redis.table-description-dir=/home/Documents/presto-server-0.235.1/etc/catalog/redis</span><br><span class="line"># presto查找表名称与库名称分隔符</span><br><span class="line">redis.key-delimiter=:</span><br><span class="line">redis.key-prefix-schema-table=true</span><br><span class="line">redis.hide-internal-columns=false</span><br><span class="line">redis.hide-internal-columns=false</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意点</strong>：因为在redis中存储数据结构为 hash，所以presto通过解析 key值生成结构化数据中的表名称和库名称，解析的分隔符默认为：</p>
+<ul>
+<li>创建redis metadata文件，在redis.properties 中写定的metadata配置路径下新建redis.json文件，文件如下：</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;tableName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user_info&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;schemaName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user_profile&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;dataFormat&quot;</span><span class="punctuation">:</span> <span class="string">&quot;raw&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;fields&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;redis_key&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;varchar&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;hidden&quot;</span><span class="punctuation">:</span> <span class="string">&quot;false&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;dataFormat&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hash&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;fields&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hospitalizedNum&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;varchar&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;mapping&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hospitalizedNum&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hid&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;varchar&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;mapping&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hid&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>在redis客户端中写入数据，数据格式为HASH，进行测试：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在presto客户端进行查询：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./presto --server localhost:8080 --catalog redis --schema user_profile（user_profile即为redis key:分隔符第一位）</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>结果展示：</li>
+</ul>
+<p><img src="https://i.loli.net/2020/07/07/A1Yh6c5Hvgpib9L.png" alt="批注 2020-07-07 170252.png"></p>
+<h3 id="RocksDB中大批次数据写入Redis中"><a href="#RocksDB中大批次数据写入Redis中" class="headerlink" title="RocksDB中大批次数据写入Redis中"></a>RocksDB中大批次数据写入Redis中</h3><h4 id="使用redis-pipeline提高写入速度"><a href="#使用redis-pipeline提高写入速度" class="headerlink" title="使用redis pipeline提高写入速度"></a>使用redis pipeline提高写入速度</h4><p>Redis是使用客户端-服务端模型和请求&#x2F;响应协议的TCP服务器，通常情况下一次请求需要以下步骤</p>
+<p>1、客户端向服务端发送查询，以阻塞的方式从套接字中读取服务器响应</p>
+<p>2、服务器处理命令并将响应发送给客户端</p>
+<p>这种模式依赖于RTT（往返时间），如果有1000条数据插入，则会耗时1000*RTT</p>
+<p>pipeline是将所有命令打包，通过一次网络参数发送至服务端，所以可以大大减少网络通信时间。</p>
+<h4 id="使用多线程处理模式提高写入速度"><a href="#使用多线程处理模式提高写入速度" class="headerlink" title="使用多线程处理模式提高写入速度"></a>使用多线程处理模式提高写入速度</h4><p>将对数据集进行拆分，规定每一个线程处理N条数据，并行写入Redis提高速度。</p>
+<h4 id="执行时间表"><a href="#执行时间表" class="headerlink" title="执行时间表"></a>执行时间表</h4><table>
+<thead>
+<tr>
+<th>数据量</th>
+<th>方案说明</th>
+<th>耗时（MS）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>320000</td>
+<td>不使用redis pipeline模式</td>
+<td>291070</td>
+</tr>
+<tr>
+<td>320000</td>
+<td>使用redis pipeline</td>
+<td>25337</td>
+</tr>
+<tr>
+<td>320000</td>
+<td>使用 pipeline+多线程</td>
+<td>9780</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>张睿
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://zhangruipython.github.io/2020/07/07/%E4%BD%BF%E7%94%A8redis-presto%E5%AE%9E%E7%8E%B0rocksdb%E4%B8%AD%E6%95%B0%E6%8D%AESQL%E7%BB%93%E6%9E%84%E5%8C%96/" title="使用redis+presto实现RocksDB中数据SQL结构化">https://zhangruipython.github.io/2020/07/07/使用redis-presto实现rocksdb中数据SQL结构化/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/presto/" rel="tag"># presto</a>
+              <a href="/tags/redis/" rel="tag"># redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/01/presto%E5%88%9B%E5%BB%BAUDF%E5%87%BD%E6%95%B0/" rel="prev" title="presto创建UDF函数">
+      <i class="fa fa-chevron-left"></i> presto创建UDF函数
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/15/Hive-UDF%E6%9E%84%E5%BB%BA/" rel="next" title="Hive UDF构建">
+      Hive UDF构建 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E4%BD%BF%E7%94%A8presto%E7%BB%93%E5%90%88Redis%E5%AE%9E%E7%8E%B0RocksDB%E6%95%B0%E6%8D%AESQL%E7%BB%93%E6%9E%84%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">通过使用presto结合Redis实现RocksDB数据SQL结构化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8presto%E7%BB%93%E5%90%88redis%E7%9A%84%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">为什么使用presto结合redis的方式实现？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%BB%A5redis%E4%BD%9C%E4%B8%BA%E6%95%B0%E6%8D%AE%E6%BA%90%EF%BC%8Cpresto%E4%BD%9C%E4%B8%BA%E5%8D%B3%E5%B8%AD%E6%9F%A5%E8%AF%A2%E5%88%86%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">实现以redis作为数据源，presto作为即席查询分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B3%E5%B8%AD%E6%9F%A5%E8%AF%A2%E5%88%86%E6%9E%90"><span class="nav-number">1.2.1.</span> <span class="nav-text">什么是即席查询分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.2.2.</span> <span class="nav-text">开发步骤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RocksDB%E4%B8%AD%E5%A4%A7%E6%89%B9%E6%AC%A1%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5Redis%E4%B8%AD"><span class="nav-number">1.3.</span> <span class="nav-text">RocksDB中大批次数据写入Redis中</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8redis-pipeline%E6%8F%90%E9%AB%98%E5%86%99%E5%85%A5%E9%80%9F%E5%BA%A6"><span class="nav-number">1.3.1.</span> <span class="nav-text">使用redis pipeline提高写入速度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%A4%84%E7%90%86%E6%A8%A1%E5%BC%8F%E6%8F%90%E9%AB%98%E5%86%99%E5%85%A5%E9%80%9F%E5%BA%A6"><span class="nav-number">1.3.2.</span> <span class="nav-text">使用多线程处理模式提高写入速度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4%E8%A1%A8"><span class="nav-number">1.3.3.</span> <span class="nav-text">执行时间表</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">张睿</p>
+  <div class="site-description" itemprop="description">我的学习记录</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="sidebar-button motion-element"><i class="fa fa-comment"></i>
+    Chat
+  </a>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/zhangruipython" title="https:&#x2F;&#x2F;github.com&#x2F;zhangruipython" rel="noopener" target="_blank">Title</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张睿</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
