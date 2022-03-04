@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruipython.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="pyspark udf自定义函数spark udf的定义：UDF(User-defined functions, UDFs),即用户自定义函数，在Spark Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。实际应用： 定义一个函数  这是一个普通的判断函数 12345def get_bad_point(grid01_order_index, grid02_order_inde">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pyspark udf自定义函数">
+<meta property="og:url" content="https://zhangruipython.github.io/2019/04/20/pyspark-udf%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:site_name" content="MyBlog">
+<meta property="og:description" content="pyspark udf自定义函数spark udf的定义：UDF(User-defined functions, UDFs),即用户自定义函数，在Spark Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。实际应用： 定义一个函数  这是一个普通的判断函数 12345def get_bad_point(grid01_order_index, grid02_order_inde">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-20T08:56:39.000Z">
+<meta property="article:modified_time" content="2019-04-20T08:58:02.000Z">
+<meta property="article:author" content="张睿">
+<meta property="article:tag" content="spark">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruipython.github.io/2019/04/20/pyspark-udf%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>pyspark udf自定义函数 | MyBlog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MyBlog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhangruipython.github.io/2019/04/20/pyspark-udf%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="张睿">
+      <meta itemprop="description" content="我的学习记录">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MyBlog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pyspark udf自定义函数
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-04-20 16:56:39 / 修改时间：16:58:02" itemprop="dateCreated datePublished" datetime="2019-04-20T16:56:39+08:00">2019-04-20</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="pyspark-udf自定义函数"><a href="#pyspark-udf自定义函数" class="headerlink" title="pyspark udf自定义函数"></a>pyspark udf自定义函数</h2><h3 id="spark-udf的定义："><a href="#spark-udf的定义：" class="headerlink" title="spark udf的定义："></a>spark udf的定义：</h3><h4 id="UDF-User-defined-functions-UDFs-即用户自定义函数，在Spark-Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。"><a href="#UDF-User-defined-functions-UDFs-即用户自定义函数，在Spark-Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。" class="headerlink" title="UDF(User-defined functions, UDFs),即用户自定义函数，在Spark Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。"></a>UDF(User-defined functions, UDFs),即用户自定义函数，在Spark Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。</h4><h3 id="实际应用："><a href="#实际应用：" class="headerlink" title="实际应用："></a>实际应用：</h3><ul>
+<li>定义一个函数</li>
+</ul>
+<p>这是一个普通的判断函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_bad_point</span>(<span class="params">grid01_order_index, grid02_order_index, grid01_hash, grid02_hash</span>):</span><br><span class="line">    <span class="keyword">if</span> grid01_order_index &lt; grid02_order_index:</span><br><span class="line">        <span class="keyword">return</span> grid02_hash</span><br><span class="line">    <span class="keyword">elif</span> grid02_order_index &lt; grid01_order_index:</span><br><span class="line">        <span class="keyword">return</span> grid01_hash</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将函数注册为spark udf</li>
+</ul>
+<p>这里需要表明方法的返回值类型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_bad_udf = udf(get_bad_point, StringType())</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>结合spark SQL自带方法使用</li>
+</ul>
+<p>向udf函数传入spark dataframe中列名作为参数</p>
+<p>alias为udf返回的结果生成别名</p>
+<p>distinct()是对dataframe中数据进行去重</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">unmatched_point_df = unmatched_distance_point.select(</span><br><span class="line">       get_bad_udf(<span class="string">&quot;grid01_order_index&quot;</span>, <span class="string">&quot;grid02_order_index&quot;</span>, <span class="string">&quot;grid01_hash&quot;</span>,</span><br><span class="line">                   <span class="string">&quot;grid02_hash&quot;</span>).alias(<span class="string">&quot;bad_point_hash&quot;</span>)).distinct()</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>pyspark的使用可以大大降低编写spark查询的代码量，结合udf函数的使用使我们操作spark SQL时不需要写大量的SQL脚本，由于spark SQL为我们封装了许多的操作函数，比如：过滤filter，两个dataframe之间取差集exceptAll  等等</p>
+<p>所以我们编写spark 程序代码量不应该很多，如果代码量很多出现了大量的for循环，if判断等那么我们的代码就需要优化，原因就是所有的SQL都是循环+判断，所以可以用spark SQL就用spark SQL，最好不要手写循环判断。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/spark/" rel="tag"># spark</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/24/%E8%AE%A1%E7%AE%97%E4%B8%80%E7%82%B9%E5%92%8C%E5%91%A8%E5%9B%B4%E8%B7%9D%E7%A6%BB%E6%9C%80%E8%BF%91%E7%9A%84%E5%89%8D100%E7%82%B9%E4%BD%8D%E7%BD%AE/" rel="prev" title="计算一点和周围距离最近的前100点位置">
+      <i class="fa fa-chevron-left"></i> 计算一点和周围距离最近的前100点位置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/04/20/postgres+pyspark%E8%AE%A1%E7%AE%97%E5%89%8D100%E6%9C%80%E7%9F%AD%E8%B7%9D%E7%A6%BB/" rel="next" title="使用pyspark计算一点和周围距离最近的前100点位置">
+      使用pyspark计算一点和周围距离最近的前100点位置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#pyspark-udf%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">pyspark udf自定义函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#spark-udf%E7%9A%84%E5%AE%9A%E4%B9%89%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">spark udf的定义：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UDF-User-defined-functions-UDFs-%E5%8D%B3%E7%94%A8%E6%88%B7%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0%EF%BC%8C%E5%9C%A8Spark-Sql%E7%9A%84%E5%BC%80%E5%8F%91%E4%B8%AD%E5%8D%81%E5%88%86%E5%B8%B8%E7%94%A8%EF%BC%8CUDF%E5%AF%B9%E8%A1%A8%E4%B8%AD%E7%9A%84%E6%AF%8F%E4%B8%80%E8%A1%8C%E8%BF%9B%E8%A1%8C%E5%87%BD%E6%95%B0%E5%A4%84%E7%90%86%EF%BC%8C%E8%BF%94%E5%9B%9E%E6%96%B0%E7%9A%84%E5%80%BC%E3%80%82"><span class="nav-number">1.1.1.</span> <span class="nav-text">UDF(User-defined functions, UDFs),即用户自定义函数，在Spark Sql的开发中十分常用，UDF对表中的每一行进行函数处理，返回新的值。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">实际应用：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">张睿</p>
+  <div class="site-description" itemprop="description">我的学习记录</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张睿</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

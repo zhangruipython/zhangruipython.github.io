@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruipython.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="nvidia docker配置GPU 深度学习镜像 使用目标通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理 安装流程安装nvidia docker 卸载nvidia-docker和其他GPU容器 12docker volume ls -q -f driver&#x3D;nvidia-doc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nvidia docker配置darknet应用镜像环境">
+<meta property="og:url" content="https://zhangruipython.github.io/2020/02/18/nvidia-docker%E9%85%8D%E7%BD%AEdarknet%E5%BA%94%E7%94%A8%E9%95%9C%E5%83%8F%E7%8E%AF%E5%A2%83/index.html">
+<meta property="og:site_name" content="MyBlog">
+<meta property="og:description" content="nvidia docker配置GPU 深度学习镜像 使用目标通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理 安装流程安装nvidia docker 卸载nvidia-docker和其他GPU容器 12docker volume ls -q -f driver&#x3D;nvidia-doc">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-02-18T02:24:31.000Z">
+<meta property="article:modified_time" content="2020-06-10T12:27:30.000Z">
+<meta property="article:author" content="张睿">
+<meta property="article:tag" content="nvidia docker">
+<meta property="article:tag" content="darknet">
+<meta property="article:tag" content="cudnn">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruipython.github.io/2020/02/18/nvidia-docker%E9%85%8D%E7%BD%AEdarknet%E5%BA%94%E7%94%A8%E9%95%9C%E5%83%8F%E7%8E%AF%E5%A2%83/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>nvidia docker配置darknet应用镜像环境 | MyBlog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MyBlog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhangruipython.github.io/2020/02/18/nvidia-docker%E9%85%8D%E7%BD%AEdarknet%E5%BA%94%E7%94%A8%E9%95%9C%E5%83%8F%E7%8E%AF%E5%A2%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="张睿">
+      <meta itemprop="description" content="我的学习记录">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MyBlog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          nvidia docker配置darknet应用镜像环境
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-18 10:24:31" itemprop="dateCreated datePublished" datetime="2020-02-18T10:24:31+08:00">2020-02-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-10 20:27:30" itemprop="dateModified" datetime="2020-06-10T20:27:30+08:00">2020-06-10</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="nvidia-docker配置GPU-深度学习镜像"><a href="#nvidia-docker配置GPU-深度学习镜像" class="headerlink" title="nvidia docker配置GPU 深度学习镜像"></a>nvidia docker配置GPU 深度学习镜像</h1><hr>
+<h2 id="使用目标"><a href="#使用目标" class="headerlink" title="使用目标"></a>使用目标</h2><p><strong>通过nvidia docker搭建在宿主机上搭建装有cuda,cudnn,opencv,darkent的基础镜像，从而便于后续基于GPU目标识别应用的容器化部署和管理</strong></p>
+<h2 id="安装流程"><a href="#安装流程" class="headerlink" title="安装流程"></a>安装流程</h2><h3 id="安装nvidia-docker"><a href="#安装nvidia-docker" class="headerlink" title="安装nvidia docker"></a>安装nvidia docker</h3><ul>
+<li><p><strong>卸载nvidia-docker和其他GPU容器</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker volume ls -q -f driver=nvidia-docker | xargs -r -I&#123;&#125; -n1 docker ps -q -a -f volume=&#123;&#125; | xargs -r docker rm -f</span><br><span class="line">sudo apt-get purge -y nvidia-docker</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>添加package repositories</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \</span><br><span class="line">  sudo apt-key add -</span><br><span class="line">distribution=$(. /etc/os-release;echo $ID$VERSION_ID)</span><br><span class="line">curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | \</span><br><span class="line">  sudo tee /etc/apt/sources.list.d/nvidia-docker.list</span><br><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="安装-nvidia-docker2"><a href="#安装-nvidia-docker2" class="headerlink" title="安装 nvidia-docker2"></a>安装 nvidia-docker2</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install -y nvidia-docker2</span><br><span class="line">sudo pkill -SIGHUP dockerd</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="安装cuda基础镜像"><a href="#安装cuda基础镜像" class="headerlink" title="安装cuda基础镜像"></a>安装cuda基础镜像</h3><ul>
+<li><p><strong>安装指定版本cuda</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-docker run --rm -ti nvidia/cuda:&#123;cuda版本&#125; nvcc --version</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="更新基础cuda镜像"><a href="#更新基础cuda镜像" class="headerlink" title="更新基础cuda镜像"></a>更新基础cuda镜像</h3><pre><code>更新cuda镜像的方式有很多，例如：通过DockerFile文件更新镜像，通过bash编辑镜像然后commit，我这里使用的方法是，先通过cuda镜像生成容器，通过编辑容器，将容器保存为新的镜像文件，这样的原因在于可以很方便的通过docker cap命令拷贝文件进入容器中
+</code></pre>
+<h4 id="预先准备"><a href="#预先准备" class="headerlink" title="预先准备"></a>预先准备</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1、更换apt安装镜像源</span><br><span class="line">sed -i &#x27;s#http://archive.ubuntu.com/#http://mirrors.tuna.tsinghua.edu.cn/#&#x27; /etc/apt/sources.list</span><br><span class="line">2、更新apt镜像源，修复包，安装python3 pip</span><br><span class="line">apt-get update -y --fix-missing &amp;&amp; apt-get install -y python3-pip python3-dev libsm6 libxext6 libxrender-dev --fix-missing</span><br><span class="line">3、安装依赖包</span><br><span class="line">apt-get install -y \</span><br><span class="line">    wget \</span><br><span class="line">    unzip \</span><br><span class="line">    ffmpeg \</span><br><span class="line">    git</span><br><span class="line"></span><br><span class="line"># Install cmake</span><br><span class="line">apt-get install -y build-essential</span><br><span class="line">apt-get install -y cmake</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="安装OpenCV"><a href="#安装OpenCV" class="headerlink" title="安装OpenCV"></a>安装OpenCV</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1、下载opencv源码包，opencv源码包有1个多G，可以在gitee上clone源码，速度很快</span><br><span class="line">git clone -b 3.4 https://gitee.com/mirrors/opencv.git</span><br><span class="line">2、安装依赖包</span><br><span class="line">sudo apt-get install libpng-dev</span><br><span class="line">sudo apt-get install libjpeg-dev</span><br><span class="line">sudo apt-get install libopenexr-dev</span><br><span class="line">sudo apt-get install libtiff-dev</span><br><span class="line">sudo apt-get install libwebp-dev</span><br><span class="line">3、在OpenCV中创建build文件夹</span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">4、配置和编译</span><br><span class="line">cmake ../</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装cudnn"><a href="#安装cudnn" class="headerlink" title="安装cudnn"></a>安装cudnn</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1、下载与cuda版本对应的cudnn</span><br><span class="line">2、将cudnn拷贝至容器指定目录下 docker cp &#123;cudnn文件目录&#125; &#123;容器目录&#125;</span><br><span class="line">3、解压cudnn文件</span><br><span class="line">4、sudo cp cuda/include/cudnn.h /usr/local/cuda/include</span><br><span class="line">   sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64</span><br><span class="line">   sudo chmod a+r /usr/local/cuda/include/cudnn.h /usr/local/cuda/lib64/libcudnn*</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="编译darknet"><a href="#编译darknet" class="headerlink" title="编译darknet"></a>编译darknet</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1、下载ABdarknet源码</span><br><span class="line">git clone https://github.com/AlexeyAB/darknet</span><br><span class="line">2、修改Makefile文件</span><br><span class="line">GPU=1</span><br><span class="line">CUDNN=1</span><br><span class="line">OPENCV=1</span><br><span class="line">3、编译</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<h4 id="根据基础镜像创建容器"><a href="#根据基础镜像创建容器" class="headerlink" title="根据基础镜像创建容器"></a>根据基础镜像创建容器</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-docker run -it name &#123;容器名称&#125; &#123;镜像名称&#125; &#123;容器位置&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：1、一定要用nvidia-docker创建容器，否者会出现cudnn not found的问题</strong></p>
+<p><strong>2、调用darknet时如果出现 error while loading shared libraries:libopencv_highgui.so.3.4: cannot open shared object file的问题，编辑 &#x2F;etc&#x2F;ld.so.conf文件，加上include &#x2F;etc&#x2F;ld.so.conf.d&#x2F;*.con，然后执行ldconfig，在darknet目录下make clean后重新make</strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nvidia-docker/" rel="tag"># nvidia docker</a>
+              <a href="/tags/darknet/" rel="tag"># darknet</a>
+              <a href="/tags/cudnn/" rel="tag"># cudnn</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/06/spacy+doccano%20NER%E6%B5%81%E7%A8%8B/" rel="prev" title="spacy+doccano 中文NLP流程">
+      <i class="fa fa-chevron-left"></i> spacy+doccano 中文NLP流程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/10/%E4%BD%BF%E7%94%A8spark-ml%E6%9E%84%E5%BB%BA%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B/" rel="next" title="使用spark ml构建回归模型">
+      使用spark ml构建回归模型 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#nvidia-docker%E9%85%8D%E7%BD%AEGPU-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E9%95%9C%E5%83%8F"><span class="nav-number">1.</span> <span class="nav-text">nvidia docker配置GPU 深度学习镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%9B%AE%E6%A0%87"><span class="nav-number">1.1.</span> <span class="nav-text">使用目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">安装流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85nvidia-docker"><span class="nav-number">1.2.1.</span> <span class="nav-text">安装nvidia docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-nvidia-docker2"><span class="nav-number">1.2.2.</span> <span class="nav-text">安装 nvidia-docker2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85cuda%E5%9F%BA%E7%A1%80%E9%95%9C%E5%83%8F"><span class="nav-number">1.2.3.</span> <span class="nav-text">安装cuda基础镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E5%9F%BA%E7%A1%80cuda%E9%95%9C%E5%83%8F"><span class="nav-number">1.2.4.</span> <span class="nav-text">更新基础cuda镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%85%88%E5%87%86%E5%A4%87"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">预先准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85OpenCV"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">安装OpenCV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85cudnn"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">安装cudnn</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91darknet"><span class="nav-number">1.2.4.4.</span> <span class="nav-text">编译darknet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E5%9F%BA%E7%A1%80%E9%95%9C%E5%83%8F%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8"><span class="nav-number">1.2.4.5.</span> <span class="nav-text">根据基础镜像创建容器</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">张睿</p>
+  <div class="site-description" itemprop="description">我的学习记录</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张睿</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

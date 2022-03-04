@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruipython.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="使用pyspark计算一点和周围距离最近的前100点位置业务场景有一批地理位置存储在postgres数据库表中为表1，有另一张基础表覆盖了地区所有的地理位置为表2，现在需要计算出表1中所有位置最近的前100个地点，并进行排序，最终在数据库中生成一张新表，表中包含目标地点的所有topN最近点的hash使用工具 pyspark postgres  实现过程由于数据量过大所以需要将数据放在spark上运">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用pyspark计算一点和周围距离最近的前100点位置">
+<meta property="og:url" content="https://zhangruipython.github.io/2019/04/20/postgres+pyspark%E8%AE%A1%E7%AE%97%E5%89%8D100%E6%9C%80%E7%9F%AD%E8%B7%9D%E7%A6%BB/index.html">
+<meta property="og:site_name" content="MyBlog">
+<meta property="og:description" content="使用pyspark计算一点和周围距离最近的前100点位置业务场景有一批地理位置存储在postgres数据库表中为表1，有另一张基础表覆盖了地区所有的地理位置为表2，现在需要计算出表1中所有位置最近的前100个地点，并进行排序，最终在数据库中生成一张新表，表中包含目标地点的所有topN最近点的hash使用工具 pyspark postgres  实现过程由于数据量过大所以需要将数据放在spark上运">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-20T08:56:39.000Z">
+<meta property="article:modified_time" content="2019-04-30T08:36:50.000Z">
+<meta property="article:author" content="张睿">
+<meta property="article:tag" content="spark">
+<meta property="article:tag" content="postgresql">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruipython.github.io/2019/04/20/postgres+pyspark%E8%AE%A1%E7%AE%97%E5%89%8D100%E6%9C%80%E7%9F%AD%E8%B7%9D%E7%A6%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>使用pyspark计算一点和周围距离最近的前100点位置 | MyBlog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MyBlog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhangruipython.github.io/2019/04/20/postgres+pyspark%E8%AE%A1%E7%AE%97%E5%89%8D100%E6%9C%80%E7%9F%AD%E8%B7%9D%E7%A6%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="张睿">
+      <meta itemprop="description" content="我的学习记录">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MyBlog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用pyspark计算一点和周围距离最近的前100点位置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-20 16:56:39" itemprop="dateCreated datePublished" datetime="2019-04-20T16:56:39+08:00">2019-04-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-04-30 16:36:50" itemprop="dateModified" datetime="2019-04-30T16:36:50+08:00">2019-04-30</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="使用pyspark计算一点和周围距离最近的前100点位置"><a href="#使用pyspark计算一点和周围距离最近的前100点位置" class="headerlink" title="使用pyspark计算一点和周围距离最近的前100点位置"></a>使用pyspark计算一点和周围距离最近的前100点位置</h2><h3 id="业务场景"><a href="#业务场景" class="headerlink" title="业务场景"></a>业务场景</h3><h5 id="有一批地理位置存储在postgres数据库表中为表1，有另一张基础表覆盖了地区所有的地理位置为表2，现在需要计算出表1中所有位置最近的前100个地点，并进行排序，最终在数据库中生成一张新表，表中包含目标地点的所有topN最近点的hash"><a href="#有一批地理位置存储在postgres数据库表中为表1，有另一张基础表覆盖了地区所有的地理位置为表2，现在需要计算出表1中所有位置最近的前100个地点，并进行排序，最终在数据库中生成一张新表，表中包含目标地点的所有topN最近点的hash" class="headerlink" title="有一批地理位置存储在postgres数据库表中为表1，有另一张基础表覆盖了地区所有的地理位置为表2，现在需要计算出表1中所有位置最近的前100个地点，并进行排序，最终在数据库中生成一张新表，表中包含目标地点的所有topN最近点的hash"></a>有一批地理位置存储在postgres数据库表中为表1，有另一张基础表覆盖了地区所有的地理位置为表2，现在需要计算出表1中所有位置最近的前100个地点，并进行排序，最终在数据库中生成一张新表，表中包含目标地点的所有topN最近点的hash</h5><h3 id="使用工具"><a href="#使用工具" class="headerlink" title="使用工具"></a>使用工具</h3><ul>
+<li>pyspark</li>
+<li>postgres</li>
+</ul>
+<h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p>由于数据量过大所以需要将数据放在spark上运行，使用spark的dataframe数据格式进行数据处理比较便捷（spark2.0已经使用dataframe替代rdd）</p>
+<ul>
+<li><p>通过spark jdbc连接数据库，执行SQL生成dataframe格式数据，其中关键点在于如何通过SQL计算出topN距离（一开始我准备通过for循环，在代码中遍历求值，后来发现效率太低，而且需要通过spark udf将方法注册进spark），通过SQL进行计算范围两个步骤（1）计算出距离（2）对距离进行排序，排序时需要显性表示降序还是升序（3）对数据进行筛选</p>
+<hr>
+</li>
+</ul>
+<p>​       以下是SQL，其中txpop是基础地理信息表，test_by_zhangrui是目标地理信息表，由于不能使用group by聚合函数，             —– 所以换了一种方式：</p>
+<p>​       </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> a.choose_site_hash,a.filtrate_site_hash,a.distance <span class="keyword">FROM</span></span><br><span class="line">(<span class="keyword">SELECT</span></span><br><span class="line">	tmp2.hash1 <span class="keyword">as</span> choose_site_hash,</span><br><span class="line">	txpop.grid_hash <span class="keyword">as</span> filtrate__site_hash,</span><br><span class="line">	st_distance (tmp2.geo1 :: geography, txpop.geo :: geography) <span class="keyword">as</span> distance,</span><br><span class="line">	 <span class="built_in">ROW_NUMBER</span>() <span class="keyword">OVER</span>(<span class="keyword">PARTITION</span> <span class="keyword">by</span> tmp2.hash1 <span class="keyword">ORDER</span> <span class="keyword">BY</span> (st_distance (tmp2.geo1 :: geography, txpop.geo :: geography)) <span class="keyword">ASC</span>) <span class="keyword">as</span> n</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	(</span><br><span class="line">	<span class="keyword">SELECT</span></span><br><span class="line">		grid_hash <span class="keyword">AS</span> hash1,</span><br><span class="line">		geo <span class="keyword">AS</span> geo1 </span><br><span class="line">	<span class="keyword">FROM</span></span><br><span class="line">		test_by_zhangrui </span><br><span class="line">	) tmp2,</span><br><span class="line">	txpop </span><br><span class="line">) a</span><br><span class="line"><span class="keyword">WHERE</span> n<span class="operator">&lt;=</span><span class="number">10</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<ul>
+<li>注册spark （master参数表明spark是运行在本机还是集群上，以及配置多少个节点），通过spark jdbc驱动连接数据库，并执行SQL（详情可看官网：<a target="_blank" rel="noopener" href="http://spark.apache.org/docs/latest/sql-data-sources-jdbc.html">http://spark.apache.org/docs/latest/sql-data-sources-jdbc.html</a>）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">def get_dataframe_jdbc(a):</span><br><span class="line">    spark = SparkSession \</span><br><span class="line">        .builder \</span><br><span class="line">        .appName(&quot;Python Spark SQL basic example&quot;) \</span><br><span class="line">        .master(&quot;local[*]&quot;) \</span><br><span class="line">        .getOrCreate()</span><br><span class="line">    jdbcDF = spark.read \</span><br><span class="line">        .format(&quot;jdbc&quot;) \</span><br><span class="line">        .option(&quot;url&quot;, &quot;jdbc:postgresql://*****&quot;) \</span><br><span class="line">        .option(&quot;dbtable&quot;, a) \</span><br><span class="line">        .option(&quot;user&quot;, &quot;*****&quot;) \</span><br><span class="line">        .option(&quot;password&quot;, &quot;*****&quot;) \</span><br><span class="line">        .load()</span><br><span class="line">    return jdbcDF</span><br></pre></td></tr></table></figure>
+
+<hr>
+<ul>
+<li>执行SQL后，spark返回一个spark dataframe格式数据，我们需要将dataframe并入数据库做持久化</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">def write_dataframe_jdbc(table_name, result):</span><br><span class="line">    result.write \</span><br><span class="line">        .format(&quot;jdbc&quot;) \</span><br><span class="line">        .option(&quot;url&quot;, &quot;jdbc:postgresql://******&quot;) \</span><br><span class="line">        .option(&quot;dbtable&quot;, table_name) \</span><br><span class="line">        .option(&quot;user&quot;, &quot;*******&quot;) \</span><br><span class="line">        .option(&quot;password&quot;, &quot;*******&quot;) \</span><br><span class="line">        .save()</span><br><span class="line">    print(&quot;表生成完毕&quot;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最后我们可以在数据库中得到我们想要的表（目前spark所有配置都是默认配置没有优化，包括SQL也没有优化，待日后进行优化）</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/spark/" rel="tag"># spark</a>
+              <a href="/tags/postgresql/" rel="tag"># postgresql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/04/20/pyspark-udf%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0/" rel="prev" title="pyspark udf自定义函数">
+      <i class="fa fa-chevron-left"></i> pyspark udf自定义函数
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/04/30/Neo4j%E7%9A%84%E8%AE%A4%E7%9F%A5%E4%B8%8E%E5%AD%A6%E4%B9%A0/" rel="next" title="Neo4j的认知与学习">
+      Neo4j的认知与学习 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8pyspark%E8%AE%A1%E7%AE%97%E4%B8%80%E7%82%B9%E5%92%8C%E5%91%A8%E5%9B%B4%E8%B7%9D%E7%A6%BB%E6%9C%80%E8%BF%91%E7%9A%84%E5%89%8D100%E7%82%B9%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">使用pyspark计算一点和周围距离最近的前100点位置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF"><span class="nav-number">1.1.</span> <span class="nav-text">业务场景</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%89%E4%B8%80%E6%89%B9%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E5%AD%98%E5%82%A8%E5%9C%A8postgres%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E4%B8%AD%E4%B8%BA%E8%A1%A81%EF%BC%8C%E6%9C%89%E5%8F%A6%E4%B8%80%E5%BC%A0%E5%9F%BA%E7%A1%80%E8%A1%A8%E8%A6%86%E7%9B%96%E4%BA%86%E5%9C%B0%E5%8C%BA%E6%89%80%E6%9C%89%E7%9A%84%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E4%B8%BA%E8%A1%A82%EF%BC%8C%E7%8E%B0%E5%9C%A8%E9%9C%80%E8%A6%81%E8%AE%A1%E7%AE%97%E5%87%BA%E8%A1%A81%E4%B8%AD%E6%89%80%E6%9C%89%E4%BD%8D%E7%BD%AE%E6%9C%80%E8%BF%91%E7%9A%84%E5%89%8D100%E4%B8%AA%E5%9C%B0%E7%82%B9%EF%BC%8C%E5%B9%B6%E8%BF%9B%E8%A1%8C%E6%8E%92%E5%BA%8F%EF%BC%8C%E6%9C%80%E7%BB%88%E5%9C%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E7%94%9F%E6%88%90%E4%B8%80%E5%BC%A0%E6%96%B0%E8%A1%A8%EF%BC%8C%E8%A1%A8%E4%B8%AD%E5%8C%85%E5%90%AB%E7%9B%AE%E6%A0%87%E5%9C%B0%E7%82%B9%E7%9A%84%E6%89%80%E6%9C%89topN%E6%9C%80%E8%BF%91%E7%82%B9%E7%9A%84hash"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">有一批地理位置存储在postgres数据库表中为表1，有另一张基础表覆盖了地区所有的地理位置为表2，现在需要计算出表1中所有位置最近的前100个地点，并进行排序，最终在数据库中生成一张新表，表中包含目标地点的所有topN最近点的hash</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%B7%A5%E5%85%B7"><span class="nav-number">1.2.</span> <span class="nav-text">使用工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">实现过程</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">张睿</p>
+  <div class="site-description" itemprop="description">我的学习记录</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张睿</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangruipython.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近接触了知识图谱，并开始学习了Neo4j作为知识图谱的工具入门 什么是知识图谱？从一个简单的例子入手：在Google搜索引擎里输入“Who is the wife of Bill Gates?”，我们直接可以得到答案-“Melinda Gates”。这是因为我们在系统层面上已经创建好了一个包含“Bill Gates”和“Melinda Gates”的实体以及他俩之间关系的知识库。所以，当我们执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Neo4j的认知与学习">
+<meta property="og:url" content="https://zhangruipython.github.io/2019/04/30/Neo4j%E7%9A%84%E8%AE%A4%E7%9F%A5%E4%B8%8E%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="MyBlog">
+<meta property="og:description" content="最近接触了知识图谱，并开始学习了Neo4j作为知识图谱的工具入门 什么是知识图谱？从一个简单的例子入手：在Google搜索引擎里输入“Who is the wife of Bill Gates?”，我们直接可以得到答案-“Melinda Gates”。这是因为我们在系统层面上已经创建好了一个包含“Bill Gates”和“Melinda Gates”的实体以及他俩之间关系的知识库。所以，当我们执行">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-30T07:29:20.000Z">
+<meta property="article:modified_time" content="2019-04-30T08:31:38.000Z">
+<meta property="article:author" content="张睿">
+<meta property="article:tag" content="Neo4j">
+<meta property="article:tag" content="知识图谱">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangruipython.github.io/2019/04/30/Neo4j%E7%9A%84%E8%AE%A4%E7%9F%A5%E4%B8%8E%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Neo4j的认知与学习 | MyBlog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MyBlog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhangruipython.github.io/2019/04/30/Neo4j%E7%9A%84%E8%AE%A4%E7%9F%A5%E4%B8%8E%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="张睿">
+      <meta itemprop="description" content="我的学习记录">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MyBlog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Neo4j的认知与学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-04-30 15:29:20 / 修改时间：16:31:38" itemprop="dateCreated datePublished" datetime="2019-04-30T15:29:20+08:00">2019-04-30</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近接触了知识图谱，并开始学习了Neo4j作为知识图谱的工具入门</p>
+<h2 id="什么是知识图谱？"><a href="#什么是知识图谱？" class="headerlink" title="什么是知识图谱？"></a>什么是知识图谱？</h2><p>从一个简单的例子入手：在Google搜索引擎里输入“Who is the wife of Bill Gates?”，我们直接可以得到答案-“Melinda Gates”。这是因为我们在系统层面上已经创建好了一个包含“Bill Gates”和“Melinda Gates”的实体以及他俩之间关系的知识库。所以，当我们执行搜索的时候，就可以通过关键词提取（”Bill Gates”, “Melinda Gates”, “wife”）以及知识库上的匹配可以直接获得最终的答案。这种搜索方式跟传统的搜索引擎是不一样的，一个传统的搜索引擎它返回的是网页、而不是最终的答案，所以就多了一层用户自己筛选并过滤信息的过程。</p>
+<p>这就是一种KBQA模式的知识图谱应用，所以知识图谱本质上就是语义网络的知识库，从实际应用的角度出发可以认为知识图谱就是多关系图。在知识图谱中，我们通常使用”实体”来表示图里的节点、用”关系”表示图中边。</p>
+<h2 id="如何建立知识图谱"><a href="#如何建立知识图谱" class="headerlink" title="如何建立知识图谱"></a>如何建立知识图谱</h2><p>在建立知识图谱中我们选取的工具是Neo4j图形数据库，在建立知识图谱中最为关键的点在于：设定关系。有别于传统的关系型数据库，图数据库中一切基于关系。</p>
+<h2 id="图数据库和传统关系型数据库的区别"><a href="#图数据库和传统关系型数据库的区别" class="headerlink" title="图数据库和传统关系型数据库的区别"></a>图数据库和传统关系型数据库的区别</h2><p>传统的关系型数据库在设计时都应该满足三范式</p>
+<hr>
+<p>回顾一下三范式</p>
+<p>第一范式：确保每列的原子性</p>
+<p>第二范式：确保表中每个字段都和主键有关</p>
+<p>第三范式：确保每列都和主键直接相关而不是间接相关</p>
+<hr>
+<p>而在图数据库中每一个节点有自己的key-value属性，一群相同属性的节点就构成了label（标签），节点和节点之间通过关系相连接，relationship（关系）也有自己的key-value属性，同时在图数据中所有关系都是有向的。</p>
+<p>将图数据库与传统关系型数据库比较可以认为，关系型数据库中的实体表就是图数据库中label，实体表中的每一条记录对应着图数据库中的一个节点，关系型数据库表与表之间的join关系就是图数据库中的relationship。</p>
+<h2 id="Neo4j的使用"><a href="#Neo4j的使用" class="headerlink" title="Neo4j的使用"></a>Neo4j的使用</h2><h3 id="将关系型数据库数据转移到Neo4j中"><a href="#将关系型数据库数据转移到Neo4j中" class="headerlink" title="将关系型数据库数据转移到Neo4j中"></a>将关系型数据库数据转移到Neo4j中</h3><p>转移数据，我们使用的是Neo4j ETL 工具，它支持通过jdbc连接不同类型的数据库，将数据库中表导入Neo4j中，同时它可以自动判别关系型数据库中表与表的join关系，并在Neo4j中将其转化为relationship。</p>
+<p>但是在使用Neo4j ETL 工具时有几点需要注意：</p>
+<ul>
+<li>千万别在Windows上操作！！！ 由于Neo4j只支持以csv格式大批次导入数据，所以Neo4j ETL在本质上还是将关系型数据库中的表转为csv缓存在本地，然后在将csv导入Neo4j中，问题就出现在缓存这一步上，数据一旦在Windows上落地，Windows就会将UTF-8格式的数据转为UTF-8+BOM格式数据，也就是加了三个空字符，UTF-8+BOM的编码格式数据在导入Neo4j时会出现乱码。</li>
+<li>Neo4j ETL在做表与表之间关系处理上，是不会辨别关系方向的，很多时候关系方向是乱的，而在图数据中关系方向很重要，所以不建议使用表与表之间的join在图数据库中建立关系，还是要手动建立关系，指明方向。</li>
+</ul>
+<h3 id="一些常用的cypher语句"><a href="#一些常用的cypher语句" class="headerlink" title="一些常用的cypher语句"></a>一些常用的cypher语句</h3><p>删除关系，删除节点</p>
+<p>MATCH (n:BC_Person)-[r]-() DELETE n,r</p>
+<p>创建关系</p>
+<p>match (a:LastSiteHangjiang),(b:PersonMessage) where a.lastType &#x3D; “写字楼” create (a)-[r:is_contain]-&gt;(b) return r</p>
+<p>查询关系</p>
+<p>match p&#x3D;(PersonMessage)-[r:is_contain]-&gt;() return p</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Neo4j/" rel="tag"># Neo4j</a>
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/" rel="tag"># 知识图谱</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/04/20/postgres+pyspark%E8%AE%A1%E7%AE%97%E5%89%8D100%E6%9C%80%E7%9F%AD%E8%B7%9D%E7%A6%BB/" rel="prev" title="使用pyspark计算一点和周围距离最近的前100点位置">
+      <i class="fa fa-chevron-left"></i> 使用pyspark计算一点和周围距离最近的前100点位置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/06/spacy+doccano%20NER%E6%B5%81%E7%A8%8B/" rel="next" title="spacy+doccano 中文NLP流程">
+      spacy+doccano 中文NLP流程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什么是知识图谱？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1"><span class="nav-number">2.</span> <span class="nav-text">如何建立知识图谱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E4%BC%A0%E7%BB%9F%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.</span> <span class="nav-text">图数据库和传统关系型数据库的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Neo4j%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">Neo4j的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E6%95%B0%E6%8D%AE%E8%BD%AC%E7%A7%BB%E5%88%B0Neo4j%E4%B8%AD"><span class="nav-number">4.1.</span> <span class="nav-text">将关系型数据库数据转移到Neo4j中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%B8%B8%E7%94%A8%E7%9A%84cypher%E8%AF%AD%E5%8F%A5"><span class="nav-number">4.2.</span> <span class="nav-text">一些常用的cypher语句</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">张睿</p>
+  <div class="site-description" itemprop="description">我的学习记录</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张睿</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
